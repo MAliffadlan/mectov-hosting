@@ -41,10 +41,10 @@
 @layer base {
   :root {
     /* Light Cream & Sage Green Theme */
-    --background: 43 20% 93%; /* #f1f0e9 */
-    --foreground: 224 71.4% 4.1%; /* very dark */
+    --background: 45 11% 91%; /* #EAE8E1 approx matching photo 1 */
+    --foreground: 224 71.4% 4.1%; 
 
-    --card: 0 0% 100%; /* solid white */
+    --card: 0 0% 100%; 
     --card-foreground: 224 71.4% 4.1%;
 
     --popover: 0 0% 100%;

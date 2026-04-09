@@ -9,7 +9,7 @@ const TopHeader = () => {
     <header className="flex items-center justify-between w-full pb-4">
       <div className="flex flex-col">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Hello, {user?.username ? user.username.charAt(0).toUpperCase() + user.username.slice(1) : 'Admin'}!
+          Hello, M Alif fadlan!
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5">
           Explore information and activity about your property
