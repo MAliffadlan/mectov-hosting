@@ -6,6 +6,17 @@ import {
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const ProjectCard = ({ project, onStart, onStop, onRestart, onDelete, onViewLogs, onViewNginx }) => {
   const [loading, setLoading] = useState(null); // 'start' | 'stop' | 'restart' | 'delete' | null
@@ -116,15 +127,36 @@ const ProjectCard = ({ project, onStart, onStop, onRestart, onDelete, onViewLogs
 
         <div className="flex-1" />
 
-        <Button 
-          size="sm" 
-          variant="ghost"
-          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-          disabled={loading !== null}
-          onClick={() => handleAction('delete', () => onDelete(project.id))}
-        >
-          {loading === 'delete' ? <span className="spinner" /> : <Trash2 className="h-4 w-4" />}
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button 
+              size="sm" 
+              variant="ghost"
+              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              disabled={loading !== null}
+            >
+              {loading === 'delete' ? <span className="spinner" /> : <Trash2 className="h-4 w-4" />}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action will delete the <strong className="text-foreground">{project.name}</strong> project from the panel. 
+                This will also terminate the running mock container (if any).
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={() => handleAction('delete', () => onDelete(project.id))}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete Project
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardFooter>
     </Card>
   );

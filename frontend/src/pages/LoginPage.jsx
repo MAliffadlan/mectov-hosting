@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -26,8 +27,10 @@ const LoginPage = () => {
     try {
       const { data } = await apiLogin(username, password);
       loginUser(data.token, data.user);
+      toast.success('Welcome back!');
       navigate('/');
     } catch (err) {
+      toast.error('Login failed');
       setError(err.response?.data?.error || 'Login failed. Please try again.');
     } finally {
       setLoading(false);

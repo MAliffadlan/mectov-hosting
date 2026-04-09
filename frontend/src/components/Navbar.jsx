@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Server, LayoutDashboard, PlusCircle, LogOut, User } from 'lucide-react';
+import { Server, LayoutDashboard, PlusCircle, LogOut, User, Settings } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from "@/components/ui/button";
 
@@ -40,8 +40,16 @@ const Navbar = () => {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground border-r pr-4 border-border h-5">
+          <div className="flex items-center gap-2">
+            <Link 
+              to="/settings"
+              className="flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground transition-colors px-3 py-1.5 rounded-md hover:bg-accent"
+            >
+              <Settings className="h-4 w-4" />
+              <span>Settings</span>
+            </Link>
+            <div className="h-4 w-px bg-border mx-2" />
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mr-2">
               <User className="h-4 w-4" />
               <span>{user?.username}</span>
             </div>

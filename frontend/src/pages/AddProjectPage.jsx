@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const AddProjectPage = () => {
   const [name, setName] = useState('');
@@ -29,8 +30,10 @@ const AddProjectPage = () => {
     setLoading(true);
     try {
       await createProject({ name, port: portNum, domain });
+      toast.success('Project created successfully!');
       navigate('/');
     } catch (err) {
+      toast.error('Failed to create project');
       setError(err.response?.data?.error || 'Failed to create project.');
     } finally {
       setLoading(false);

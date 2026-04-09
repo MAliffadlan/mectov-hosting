@@ -7,6 +7,9 @@ import LogModal from '@/components/LogModal';
 import NginxModal from '@/components/NginxModal';
 import { Package, Plus, Rocket } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const DashboardPage = () => {
   const [projects, setProjects] = useState([]);
@@ -30,24 +33,44 @@ const DashboardPage = () => {
   }, [fetchProjects]);
 
   const handleStart = async (id) => {
-    await startProject(id);
-    await fetchProjects();
+    try {
+      await startProject(id);
+      toast.success('Project started successfully');
+      await fetchProjects();
+    } catch (err) {
+      toast.error('Failed to start project');
+    }
   };
 
   const handleStop = async (id) => {
-    await stopProject(id);
-    await fetchProjects();
+    try {
+      await stopProject(id);
+      toast.success('Project stopped');
+      await fetchProjects();
+    } catch (err) {
+      toast.error('Failed to stop project');
+    }
   };
 
   const handleRestart = async (id) => {
-    await restartProject(id);
-    await fetchProjects();
+    try {
+      await restartProject(id);
+      toast.success('Project restarted');
+      await fetchProjects();
+    } catch (err) {
+      toast.error('Failed to restart project');
+    }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this project?')) return;
-    await deleteProject(id);
-    await fetchProjects();
+    // Note: Delete confirmation is now handled inside ProjectCard using AlertDialog
+    try {
+      await deleteProject(id);
+      toast.success('Project deleted');
+      await fetchProjects();
+    } catch (err) {
+      toast.error('Failed to delete project');
+    }
   };
 
   const handleViewLogs = (id) => {
@@ -97,9 +120,23 @@ const DashboardPage = () => {
 
       {/* Projects Grid */}
       {loading ? (
-        <div className="flex items-center justify-center py-32 border rounded-xl border-dashed">
-          <span className="spinner mr-3" />
-          <span className="text-sm text-muted-foreground">Loading projects...</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="flex flex-col">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                  <Skeleton className="h-5 w-16" />
+                </div>
+              </CardHeader>
+              <CardContent className="pb-4 flex-1">
+                <Skeleton className="h-16 w-full rounded-lg" />
+              </CardContent>
+            </Card>
+          ))}
         </div>
       ) : projects.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-32 border rounded-xl border-dashed bg-muted/20">

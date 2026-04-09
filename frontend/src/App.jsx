@@ -5,12 +5,14 @@ import Navbar from './components/Navbar';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import AddProjectPage from './pages/AddProjectPage';
+import SettingsPage from './pages/SettingsPage';
+import { Toaster } from '@/components/ui/sonner';
 
 /**
  * Layout wrapper for authenticated pages
  */
 const AppLayout = ({ children }) => (
-  <div className="min-h-screen" style={{ background: 'var(--color-bg-primary)' }}>
+  <div className="min-h-screen bg-background">
     <Navbar />
     {children}
   </div>
@@ -51,6 +53,16 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <SettingsPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
 
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
@@ -62,6 +74,7 @@ const App = () => (
   <AuthProvider>
     <BrowserRouter>
       <AppRoutes />
+      <Toaster />
     </BrowserRouter>
   </AuthProvider>
 );

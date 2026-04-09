@@ -4,6 +4,7 @@ import { Cpu, MemoryStick, HardDrive, Clock, Box } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ServerStatus = () => {
   const [stats, setStats] = useState(null);
@@ -48,9 +49,29 @@ const ServerStatus = () => {
   if (loading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center py-6">
-          <span className="spinner mr-2" />
-          <span className="text-sm text-muted-foreground">Loading server stats...</span>
+        <CardHeader className="pb-3 flex flex-row items-center justify-between">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-5 w-40" />
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-2 w-full" />
+            </div>
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-2 w-full" />
+            </div>
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-2 w-full" />
+            </div>
+          </div>
+          <div className="flex items-center gap-6 pt-4 border-t mt-4">
+            <Skeleton className="h-3 w-28" />
+            <Skeleton className="h-3 w-24" />
+          </div>
         </CardContent>
       </Card>
     );
