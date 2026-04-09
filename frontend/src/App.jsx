@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import TopHeader from './components/TopHeader';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import AddProjectPage from './pages/AddProjectPage';
@@ -12,9 +13,14 @@ import { Toaster } from '@/components/ui/sonner';
  * Layout wrapper for authenticated pages
  */
 const AppLayout = ({ children }) => (
-  <div className="min-h-screen bg-background">
-    <Navbar />
-    {children}
+  <div className="flex xl:h-screen h-[100dvh] overflow-hidden bg-background">
+    <Sidebar />
+    <div className="flex-1 flex flex-col h-full pl-6 pr-8 py-6 overflow-hidden">
+      <TopHeader />
+      <main className="flex-1 overflow-y-auto mt-4 pb-12 pr-2 scrollbar-hide">
+        {children}
+      </main>
+    </div>
   </div>
 );
 

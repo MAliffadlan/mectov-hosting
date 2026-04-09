@@ -87,7 +87,7 @@ const DashboardPage = () => {
   const stoppedCount = projects.filter((p) => p.status === 'stopped').length;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="space-y-6 w-full pb-4">
       
       {/* Server Status */}
       <ServerStatus />
