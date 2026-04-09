@@ -13,7 +13,7 @@ import { Toaster } from '@/components/ui/sonner';
  * Layout wrapper for authenticated pages
  */
 const AppLayout = ({ children }) => (
-  <div className="flex xl:h-screen h-[100dvh] overflow-hidden" style={{backgroundColor: '#EAE9E3'}}>
+  <div className="flex xl:h-screen h-[100dvh] overflow-hidden" style={{backgroundColor: '#CFDFD4'}}>
     <Sidebar />
     <div className="flex-1 flex flex-col h-full pl-6 pr-8 py-6 overflow-hidden">
       <TopHeader />
