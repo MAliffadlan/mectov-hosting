@@ -2,97 +2,64 @@ import { useState } from 'react';
 
 const SettingsPage = () => {
   const [loading, setLoading] = useState(false);
-
-  const handleSave = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  };
+  const handleSave = () => { setLoading(true); setTimeout(() => setLoading(false), 1000); };
 
   return (
-    <div className="max-w-[800px] mx-auto w-full pb-12 pt-4">
-      <div className="mb-6 border-b border-[#E5E3D8] pb-6">
-        <h1 className="text-[20px] font-semibold text-[#171717] tracking-tight">
-          System Preferences
-        </h1>
-        <p className="text-[13px] text-[#737373] mt-1">
-          Manage panel configuration and security settings.
-        </p>
-      </div>
+    <div className="max-w-[700px] w-full pb-12">
+      <h1 className="text-[20px] font-bold text-white tracking-tight mb-1">Settings</h1>
+      <p className="text-[13px] text-[#525252] mb-8">Manage panel configuration and security.</p>
 
       <div className="space-y-6">
-        
-        {/* Authentication Settings */}
-        <div className="neo-panel overflow-hidden">
-          <div className="bg-[#FAFAFA] px-6 py-4 border-b border-[#E5E3D8]">
-            <h2 className="text-[14px] font-semibold text-[#171717]">
-              Security
-            </h2>
-            <p className="text-[12px] text-[#737373] mt-0.5">Update host access credentials.</p>
+        {/* Security */}
+        <div className="surface-elevated overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#1e1e1e]">
+            <h2 className="text-[14px] font-semibold text-white">Security</h2>
+            <p className="text-[11px] text-[#525252] mt-0.5">Update access credentials</p>
           </div>
-          
-          <div className="p-6 md:p-8 space-y-5">
-            <div className="max-w-md">
-              <label className="block text-[13px] font-medium text-[#171717] mb-1.5">New Password</label>
-              <input 
-                type="password" 
-                className="neo-input w-full px-3 py-2 text-[14px]"
-              />
+          <div className="p-6 space-y-4">
+            <div className="max-w-sm">
+              <label className="block text-[12px] font-medium text-[#a1a1a1] mb-2">New Password</label>
+              <input type="password" className="input-field" />
             </div>
-            <div className="max-w-md">
-              <label className="block text-[13px] font-medium text-[#171717] mb-1.5">Confirm Password</label>
-              <input 
-                type="password" 
-                className="neo-input w-full px-3 py-2 text-[14px]"
-              />
+            <div className="max-w-sm">
+              <label className="block text-[12px] font-medium text-[#a1a1a1] mb-2">Confirm</label>
+              <input type="password" className="input-field" />
             </div>
-            <div className="pt-2">
-              <button 
-                onClick={handleSave} 
-                disabled={loading}
-                className="neo-btn-secondary px-4 py-2 text-[13px]"
-              >
-                {loading ? 'Saving...' : 'Update Password'}
-              </button>
-            </div>
+            <button onClick={handleSave} disabled={loading} className="btn-ghost mt-2">
+              {loading ? 'Saving...' : 'Update Password'}
+            </button>
           </div>
         </div>
 
-        {/* System Settings */}
-        <div className="neo-panel overflow-hidden">
-          <div className="bg-[#FAFAFA] px-6 py-4 border-b border-[#E5E3D8]">
-            <h2 className="text-[14px] font-semibold text-[#171717]">
-              Engine Configuration
-            </h2>
-            <p className="text-[12px] text-[#737373] mt-0.5">Advanced network toggles.</p>
+        {/* Engine */}
+        <div className="surface-elevated overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#1e1e1e]">
+            <h2 className="text-[14px] font-semibold text-white">Engine</h2>
+            <p className="text-[11px] text-[#525252] mt-0.5">System-level configurations</p>
           </div>
-          
-          <div className="p-6 md:p-8 flex flex-col gap-0 border-b border-[#E5E3D8]/50">
-            <div className="flex items-center justify-between py-4 border-b border-[#f5f5f0]">
+          <div className="divide-y divide-[#1e1e1e]">
+            <div className="px-6 py-5 flex items-center justify-between">
               <div>
-                <h4 className="text-[13px] font-medium text-[#171717]">Automatic Nginx Reload</h4>
-                <p className="text-[12px] text-[#737373] mt-1">Zero downtime proxy reconfiguration on changes.</p>
+                <div className="text-[13px] font-medium text-[#ededed]">Auto Nginx Reload</div>
+                <div className="text-[11px] text-[#525252] mt-1">Reload proxy on config changes</div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" defaultChecked />
-                <div className="w-8 h-4 bg-[#d4d4d4] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#1a2a22]"></div>
+                <div className="w-9 h-5 bg-[#262626] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#525252] after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#22c55e] peer-checked:after:bg-white"></div>
               </label>
             </div>
-            
-            <div className="flex items-center justify-between py-4">
+            <div className="px-6 py-5 flex items-center justify-between">
               <div>
-                <h4 className="text-[13px] font-medium text-[#171717]">Verbose Logging</h4>
-                <p className="text-[12px] text-[#737373] mt-1">Retain detailed standard output dumps.</p>
+                <div className="text-[13px] font-medium text-[#ededed]">Verbose Logging</div>
+                <div className="text-[11px] text-[#525252] mt-1">Extended stdout output</div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" />
-                <div className="w-8 h-4 bg-[#d4d4d4] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#1a2a22]"></div>
+                <div className="w-9 h-5 bg-[#262626] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#525252] after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#22c55e] peer-checked:after:bg-white"></div>
               </label>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

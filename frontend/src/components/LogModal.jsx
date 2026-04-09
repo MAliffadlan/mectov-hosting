@@ -5,92 +5,37 @@ import { Download, RefreshCw, X } from 'lucide-react';
 const LogModal = ({ projectId, projectName, onClose }) => {
   const [logs, setLogs] = useState('');
   const [loading, setLoading] = useState(true);
-  const logContainerRef = useRef(null);
+  const ref = useRef(null);
 
   const fetchLogs = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getProjectLogs(projectId);
-      setLogs(data.logs);
-      
-      if (logContainerRef.current) {
-        setTimeout(() => {
-          logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
-        }, 100);
-      }
-    } catch (err) {
-      setLogs('Failed to resolve log stream. Process terminated.');
-    } finally {
-      setLoading(false);
-    }
+    try { setLoading(true); const { data } = await getProjectLogs(projectId); setLogs(data.logs); if (ref.current) setTimeout(() => { ref.current.scrollTop = ref.current.scrollHeight; }, 100); }
+    catch { setLogs('Error: Failed to connect to container stdout.'); }
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    fetchLogs();
-  }, [projectId]);
+  useEffect(() => { fetchLogs(); }, [projectId]);
 
   const handleDownload = () => {
     const blob = new Blob([logs], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${projectName}.log`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${projectName}.log`; a.click();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#f5f5f0]/80 backdrop-blur-[2px] animate-in fade-in duration-200">
-      <div className="neo-panel w-full max-w-4xl max-h-full flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 shadow-2xl">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E3D8] bg-[#FAFAFA]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+      <div className="surface-elevated w-full max-w-4xl flex flex-col overflow-hidden shadow-2xl max-h-[85vh]">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#1e1e1e]">
           <div>
-            <h2 className="text-[13px] font-semibold text-[#171717]">Container Standard Output</h2>
-            <p className="text-[11px] font-mono text-[#737373] mt-0.5">{projectName} // stdout</p>
+            <h2 className="text-[13px] font-semibold text-white">Logs</h2>
+            <p className="text-[11px] font-mono text-[#525252]">{projectName}</p>
           </div>
-          
-          <div className="flex items-center gap-1.5">
-            <button 
-              onClick={handleDownload}
-              className="px-2.5 py-1.5 text-[11px] font-medium text-[#525252] border border-[#d4d4d4] rounded bg-white hover:bg-[#f5f5f0] transition-colors flex items-center gap-1.5"
-            >
-              <Download className="w-3 h-3" /> Save
-            </button>
-            <button 
-              onClick={fetchLogs}
-              disabled={loading}
-              className="px-2.5 py-1.5 text-[11px] font-medium text-[#525252] border border-[#d4d4d4] rounded bg-white hover:bg-[#f5f5f0] transition-colors flex items-center gap-1.5"
-            >
-              <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} /> Refresh
-            </button>
-            <div className="w-px h-4 bg-[#d4d4d4] mx-1"></div>
-            <button 
-              onClick={onClose}
-              className="p-1.5 text-[#a3a3a3] hover:text-[#dc2626] transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
+          <div className="flex items-center gap-2">
+            <button onClick={handleDownload} className="btn-ghost text-[11px] py-1.5 px-3"><Download className="w-3 h-3" /> Save</button>
+            <button onClick={fetchLogs} disabled={loading} className="btn-ghost text-[11px] py-1.5 px-3"><RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} /> Refresh</button>
+            <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-[#525252] hover:text-white hover:bg-[#1a1a1a] transition-all"><X className="w-4 h-4" /></button>
           </div>
         </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-hidden flex flex-col min-h-[450px] bg-[#0A0A0A]">
-          {loading && !logs ? (
-            <div className="flex-1 flex flex-col items-center justify-center">
-              <div className="spinner text-white mb-4"></div>
-              <p className="text-[11px] font-mono text-[#737373] uppercase tracking-widest">Attaching to tty...</p>
-            </div>
-          ) : (
-            <div className="flex-1 relative overflow-hidden flex flex-col">
-              <div 
-                ref={logContainerRef}
-                className="flex-1 p-4 overflow-y-auto font-mono text-[12px] leading-relaxed text-[#d4d4d4] whitespace-pre-wrap break-all"
-              >
-                {logs || <span className="text-[#525252] italic">// log stream empty</span>}
-              </div>
-            </div>
-          )}
+        <div ref={ref} className="flex-1 bg-[#0a0a0a] p-4 overflow-y-auto font-mono text-[12px] leading-[1.8] text-[#a1a1a1] whitespace-pre-wrap break-all min-h-[400px]">
+          {loading && !logs ? <div className="flex items-center justify-center h-full"><div className="spinner"></div></div> : logs || <span className="text-[#333]">No output.</span>}
         </div>
       </div>
     </div>

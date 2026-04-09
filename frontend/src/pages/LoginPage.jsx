@@ -9,7 +9,6 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,77 +16,48 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
     try {
       const { data } = await login(username, password);
       authLogin(data.token);
-      toast.success('Logged in successfully');
-      
-      const from = location.state?.from?.pathname || "/";
-      navigate(from, { replace: true });
-    } catch (err) {
-      toast.error('Invalid username or password');
-    } finally {
-      setLoading(false);
-    }
+      toast.success('Logged in');
+      navigate(location.state?.from?.pathname || "/", { replace: true });
+    } catch { toast.error('Invalid credentials'); }
+    finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#EAE9E3] p-4">
-      <div className="w-full max-w-[380px]">
-        {/* Logo/Header */}
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] p-4">
+      {/* Subtle gradient background glow */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-gradient-to-br from-[#22c55e]/8 to-[#3b82f6]/5 rounded-full blur-[120px]" />
+      </div>
+
+      <div className="w-full max-w-[380px] relative z-10">
         <div className="flex flex-col items-center mb-10">
-          <div className="w-12 h-12 bg-[#171717] rounded-xl flex items-center justify-center mb-6 shadow-sm">
-            <Hexagon className="w-6 h-6 text-white" strokeWidth={2.5} />
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#16a34a] flex items-center justify-center mb-6 shadow-2xl shadow-green-500/30">
+            <Hexagon className="w-7 h-7 text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-[20px] font-semibold text-[#171717] tracking-tight">Mectov Panel</h1>
-          <p className="text-[13px] text-[#737373] mt-1">Sign in to your instance</p>
+          <h1 className="text-[22px] font-bold text-white tracking-tight">Mectov Panel</h1>
+          <p className="text-[13px] text-[#525252] mt-1">Sign in to your hosting instance</p>
         </div>
 
-        {/* Login Form */}
-        <div className="neo-panel overflow-hidden p-6 md:p-8">
+        <div className="surface-elevated p-8">
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-[12px] font-medium text-[#171717] mb-1.5">Username</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="neo-input w-full px-3 py-2 text-[14px]"
-                autoComplete="username"
-              />
+              <label className="block text-[12px] font-medium text-[#a1a1a1] mb-2">Username</label>
+              <input type="text" value={username} onChange={e => setUsername(e.target.value)} required className="input-field" autoComplete="username" />
             </div>
-            
             <div>
-              <label className="block text-[12px] font-medium text-[#171717] mb-1.5">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="neo-input w-full px-3 py-2 text-[14px]"
-                autoComplete="current-password"
-              />
+              <label className="block text-[12px] font-medium text-[#a1a1a1] mb-2">Password</label>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="input-field" autoComplete="current-password" />
             </div>
-            
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className={`neo-btn-primary w-full py-2.5 text-[13px] ${
-                  loading ? 'opacity-70 cursor-not-allowed' : ''
-                }`}
-              >
-                {loading ? 'Authenticating...' : 'Sign In'}
-              </button>
-            </div>
+            <button type="submit" disabled={loading} className={`btn-primary w-full justify-center py-3 text-[14px] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
+              {loading ? <><div className="spinner"></div> Authenticating...</> : 'Sign In'}
+            </button>
           </form>
         </div>
-        
-        <div className="mt-8 text-center">
-          <p className="text-[11px] text-[#a3a3a3]">Terminal-grade secure proxy panel</p>
-        </div>
+
+        <p className="text-center text-[11px] text-[#333] mt-8">Secured with JWT • End-to-end encrypted</p>
       </div>
     </div>
   );
