@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { getProjectLogs } from '../api/api';
+import { getProjectLogs } from '@/api/api';
+import { Terminal, RefreshCcw } from 'lucide-react';
+import { 
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter 
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
-/**
- * LogModal
- * Displays scrollable project logs with auto-refresh
- */
 const LogModal = ({ projectId, projectName, onClose }) => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +25,6 @@ const LogModal = ({ projectId, projectName, onClose }) => {
 
   useEffect(() => {
     fetchLogs();
-
     let interval;
     if (autoRefresh) {
       interval = setInterval(fetchLogs, 3000);
@@ -32,21 +32,11 @@ const LogModal = ({ projectId, projectName, onClose }) => {
     return () => clearInterval(interval);
   }, [projectId, autoRefresh]);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     if (logEndRef.current) {
       logEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [logs]);
-
-  // Close on Escape key
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
 
   const getLevelClass = (level) => {
     switch (level) {
@@ -59,50 +49,30 @@ const LogModal = ({ projectId, projectName, onClose }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-4" style={{ borderBottom: '1px solid var(--color-border)' }}>
-          <div>
-            <h3 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-              📜 Logs — {projectName}
-            </h3>
-            <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>
-              {logs.length} entries
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 cursor-pointer text-xs"
-              style={{ color: 'var(--color-text-muted)' }}>
-              <input
-                type="checkbox"
-                checked={autoRefresh}
-                onChange={(e) => setAutoRefresh(e.target.checked)}
-                className="accent-cyan-400"
-              />
-              Auto-refresh
-            </label>
-            <button onClick={onClose} className="btn btn-sm btn-ghost">✕</button>
-          </div>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-3xl flex flex-col max-h-[85vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center">
+            <Terminal className="mr-2 h-5 w-5" />
+            Logs — {projectName}
+          </DialogTitle>
+          <DialogDescription>
+            {logs.length} entries. Real-time container output.
+          </DialogDescription>
+        </DialogHeader>
 
-        {/* Log Content */}
-        <div className="flex-1 overflow-hidden p-4">
+        <div className="flex-1 overflow-hidden flex flex-col bg-muted/30 border rounded-md">
           {loading ? (
-            <div className="flex items-center justify-center py-10">
-              <div className="spinner" />
-              <span className="ml-3 text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                Loading logs...
-              </span>
+            <div className="flex-1 flex items-center justify-center p-10">
+              <span className="spinner mr-3" />
+              <span className="text-sm text-muted-foreground">Loading logs...</span>
             </div>
           ) : logs.length === 0 ? (
-            <div className="text-center py-10">
-              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                No logs available. Start the project to generate logs.
-              </p>
+            <div className="flex-1 flex items-center justify-center p-10">
+              <span className="text-sm text-muted-foreground">No logs available. Start the project.</span>
             </div>
           ) : (
-            <div className="log-container">
+            <div className="flex-1 overflow-y-auto p-4 log-container !border-0 !rounded-none min-h-[300px]">
               {logs.map((log, i) => (
                 <div key={i} className="log-line">
                   <span className="time">
@@ -111,7 +81,7 @@ const LogModal = ({ projectId, projectName, onClose }) => {
                   <span className={getLevelClass(log.level)}>
                     [{log.level.padEnd(5)}]
                   </span>{' '}
-                  <span style={{ color: 'var(--color-text-secondary)' }}>
+                  <span className="text-muted-foreground">
                     {log.message}
                   </span>
                 </div>
@@ -120,8 +90,21 @@ const LogModal = ({ projectId, projectName, onClose }) => {
             </div>
           )}
         </div>
-      </div>
-    </div>
+
+        <DialogFooter className="sm:justify-between items-center mt-2">
+          <label className="flex items-center text-sm font-medium cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
+            <input
+              type="checkbox"
+              className="mr-2 h-4 w-4 rounded border-primary text-primary focus:ring-primary"
+              checked={autoRefresh}
+              onChange={(e) => setAutoRefresh(e.target.checked)}
+            />
+            <RefreshCcw className="h-3 w-3 mr-1.5" />
+            Auto-refresh
+          </label>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

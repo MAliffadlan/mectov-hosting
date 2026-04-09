@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { 
+  Play, Square, RotateCw, FileText, Settings, Trash2, 
+  Globe, Cable, Clock 
+} from 'lucide-react';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-/**
- * ProjectCard
- * Displays project info with control buttons for start/stop/restart
- */
 const ProjectCard = ({ project, onStart, onStop, onRestart, onDelete, onViewLogs, onViewNginx }) => {
   const [loading, setLoading] = useState(null); // 'start' | 'stop' | 'restart' | 'delete' | null
   const isRunning = project.status === 'running';
@@ -18,113 +21,112 @@ const ProjectCard = ({ project, onStart, onStop, onRestart, onDelete, onViewLogs
   };
 
   return (
-    <div className="glass-card p-5 animate-slide-up" style={{ animationDelay: '0.05s' }}>
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className={isRunning ? 'status-running' : 'status-stopped'} />
-          <div>
-            <h3 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+    <Card className="flex flex-col">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <CardTitle className="text-base font-semibold flex items-center">
               {project.name}
-            </h3>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
+            </CardTitle>
+            <div className="flex items-center text-xs text-muted-foreground">
+              <Clock className="mr-1 h-3 w-3" />
               Created {new Date(project.createdAt).toLocaleDateString()}
-            </p>
+            </div>
+          </div>
+          <Badge 
+            variant={isRunning ? "default" : "secondary"} 
+            className={isRunning ? "bg-green-500/10 text-green-500 hover:bg-green-500/20" : "bg-destructive/10 text-destructive hover:bg-destructive/20"}
+          >
+            <span className={`h-1.5 w-1.5 rounded-full mr-1.5 ${isRunning ? 'bg-green-500' : 'bg-destructive'}`} />
+            {isRunning ? 'Running' : 'Stopped'}
+          </Badge>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="pb-4 flex-1">
+        <div className="grid grid-cols-2 gap-3 bg-muted/50 rounded-lg p-3">
+          <div className="space-y-1">
+            <span className="flex items-center text-xs text-muted-foreground">
+              <Globe className="mr-1.5 h-3 w-3" /> Domain
+            </span>
+            <span className="text-sm font-medium tracking-tight truncate block" title={project.domain}>
+              {project.domain}
+            </span>
+          </div>
+          <div className="space-y-1 border-l pl-3">
+            <span className="flex items-center text-xs text-muted-foreground">
+              <Cable className="mr-1.5 h-3 w-3" /> Port
+            </span>
+            <span className="text-sm font-medium font-mono text-primary">
+              :{project.port}
+            </span>
           </div>
         </div>
+      </CardContent>
 
-        <span className="text-xs px-2.5 py-1 rounded-full font-medium"
-          style={{
-            background: isRunning ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-            color: isRunning ? 'var(--color-success)' : 'var(--color-danger)',
-            border: `1px solid ${isRunning ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
-          }}>
-          {isRunning ? '● Running' : '○ Stopped'}
-        </span>
-      </div>
-
-      {/* Info Grid */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="rounded-lg p-3" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-          <span className="text-xs block" style={{ color: 'var(--color-text-muted)' }}>🌐 Domain</span>
-          <span className="text-sm font-medium" style={{ color: 'var(--color-primary)' }}>
-            {project.domain}
-          </span>
-        </div>
-        <div className="rounded-lg p-3" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-          <span className="text-xs block" style={{ color: 'var(--color-text-muted)' }}>🔌 Port</span>
-          <span className="text-sm font-medium" style={{ color: 'var(--color-accent)' }}>
-            :{project.port}
-          </span>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <CardFooter className="pt-0 flex flex-wrap gap-2">
         {!isRunning ? (
-          <button
-            className="btn btn-sm btn-success"
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20 hover:text-green-600"
             disabled={loading !== null}
             onClick={() => handleAction('start', () => onStart(project.id))}
           >
-            {loading === 'start' ? <span className="spinner" /> : '▶'} Start
-          </button>
+            {loading === 'start' ? <span className="spinner mr-2" /> : <Play className="mr-2 h-3.5 w-3.5 fill-current" />} Start
+          </Button>
         ) : (
-          <button
-            className="btn btn-sm btn-danger"
+          <Button 
+            size="sm" 
+            variant="outline"
+            className="bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20 hover:text-destructive"
             disabled={loading !== null}
             onClick={() => handleAction('stop', () => onStop(project.id))}
           >
-            {loading === 'stop' ? <span className="spinner" /> : '⏹'} Stop
-          </button>
+            {loading === 'stop' ? <span className="spinner mr-2" /> : <Square className="mr-2 h-3.5 w-3.5 fill-current" />} Stop
+          </Button>
         )}
 
-        <button
-          className="btn btn-sm btn-warning"
+        <Button 
+          size="sm" 
+          variant="outline"
           disabled={loading !== null}
           onClick={() => handleAction('restart', () => onRestart(project.id))}
         >
-          {loading === 'restart' ? <span className="spinner" /> : '🔄'} Restart
-        </button>
+          {loading === 'restart' ? <span className="spinner mr-2" /> : <RotateCw className="mr-2 h-3.5 w-3.5" />} Restart
+        </Button>
 
-        <button
-          className="btn btn-sm btn-ghost"
+        <Button 
+          size="sm" 
+          variant="ghost"
+          disabled={loading !== null}
           onClick={() => onViewLogs(project.id)}
-          disabled={loading !== null}
         >
-          📜 Logs
-        </button>
+          <FileText className="mr-2 h-3.5 w-3.5" /> Logs
+        </Button>
 
-        <button
-          className="btn btn-sm btn-ghost"
-          onClick={() => onViewNginx(project.id)}
+        <Button 
+          size="sm" 
+          variant="ghost"
           disabled={loading !== null}
+          onClick={() => onViewNginx(project.id)}
         >
-          ⚙️ Nginx
-        </button>
+          <Settings className="mr-2 h-3.5 w-3.5" /> Nginx
+        </Button>
 
         <div className="flex-1" />
 
-        <button
-          className="btn btn-sm"
+        <Button 
+          size="sm" 
+          variant="ghost"
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
           disabled={loading !== null}
           onClick={() => handleAction('delete', () => onDelete(project.id))}
-          style={{
-            background: 'transparent',
-            color: 'var(--color-text-muted)',
-            border: '1px solid transparent',
-          }}
-          onMouseOver={(e) => {
-            e.target.style.color = 'var(--color-danger)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.color = 'var(--color-text-muted)';
-          }}
         >
-          {loading === 'delete' ? <span className="spinner" /> : '🗑️'}
-        </button>
-      </div>
-    </div>
+          {loading === 'delete' ? <span className="spinner" /> : <Trash2 className="h-4 w-4" />}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 

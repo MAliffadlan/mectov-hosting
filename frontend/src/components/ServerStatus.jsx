@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { getServerStatus } from '../api/api';
+import { getServerStatus } from '@/api/api';
+import { Cpu, MemoryStick, HardDrive, Clock, Box } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 
-/**
- * ServerStatus
- * Displays real-time (mocked) server CPU, RAM, and Disk usage
- */
 const ServerStatus = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,83 +22,77 @@ const ServerStatus = () => {
 
   useEffect(() => {
     fetchStatus();
-    // Refresh every 5 seconds
     const interval = setInterval(fetchStatus, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const getBarColor = (value) => {
-    if (value < 40) return 'linear-gradient(90deg, #10b981 0%, #34d399 100%)';
-    if (value < 70) return 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)';
-    return 'linear-gradient(90deg, #ef4444 0%, #f87171 100%)';
+  const getIndicatorColor = (value) => {
+    if (value < 40) return "bg-green-500";
+    if (value < 70) return "bg-yellow-500";
+    return "bg-destructive";
   };
 
-  const StatItem = ({ label, value, icon }) => (
-    <div className="flex-1">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium" style={{ color: 'var(--color-text-muted)' }}>
-          {icon} {label}
+  const StatItem = ({ label, value, icon: Icon }) => (
+    <div className="flex-1 space-y-2">
+      <div className="flex items-center justify-between text-sm">
+        <span className="flex items-center text-muted-foreground">
+          <Icon className="mr-2 h-4 w-4" />
+          {label}
         </span>
-        <span className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-          {value}%
-        </span>
+        <span className="font-semibold">{value}%</span>
       </div>
-      <div className="progress-bar">
-        <div
-          className="progress-fill"
-          style={{ width: `${value}%`, background: getBarColor(value) }}
-        />
-      </div>
+      <Progress value={value} indicatorColor={getIndicatorColor(value)} className="h-2" />
     </div>
   );
 
   if (loading) {
     return (
-      <div className="glass-card p-5">
-        <div className="flex items-center gap-2">
-          <div className="spinner" />
-          <span className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
-            Loading server stats...
-          </span>
-        </div>
-      </div>
+      <Card>
+        <CardContent className="flex items-center justify-center py-6">
+          <span className="spinner mr-2" />
+          <span className="text-sm text-muted-foreground">Loading server stats...</span>
+        </CardContent>
+      </Card>
     );
   }
 
   if (!stats) return null;
 
   return (
-    <div className="glass-card p-5 animate-fade-in">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-          🖥️ Server Status
-        </h3>
-        <div className="flex items-center gap-2">
-          <span className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
-            {stats.hostname}
+    <Card>
+      <CardHeader className="pb-3 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm font-semibold flex items-center">
+          <Box className="h-4 w-4 mr-2" />
+          Server Status
+        </CardTitle>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground font-mono">{stats.hostname}</span>
+          <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2" />
+            Online
+          </Badge>
+        </div>
+      </CardHeader>
+      
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+          <StatItem label="CPU Usage" value={stats.cpu} icon={Cpu} />
+          <StatItem label="RAM Usage" value={stats.ram} icon={MemoryStick} />
+          <StatItem label="Disk Usage" value={stats.disk} icon={HardDrive} />
+        </div>
+        
+        <div className="flex items-center gap-6 text-xs text-muted-foreground pt-4 border-t">
+          <span className="flex items-center">
+            <Clock className="h-3.5 w-3.5 mr-1" />
+            Uptime: {stats.uptime}
           </span>
-          <span className="text-xs px-2 py-0.5 rounded-full"
-            style={{
-              background: 'rgba(16, 185, 129, 0.15)',
-              color: 'var(--color-success)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-            }}>
-            ● Online
+          <span className="flex items-center">
+            <Box className="h-3.5 w-3.5 mr-1" />
+            Node.js {stats.nodeVersion}
           </span>
         </div>
-      </div>
-
-      <div className="flex gap-6">
-        <StatItem label="CPU" value={stats.cpu} icon="⚡" />
-        <StatItem label="RAM" value={stats.ram} icon="🧠" />
-        <StatItem label="Disk" value={stats.disk} icon="💾" />
-      </div>
-
-      <div className="mt-3 flex items-center gap-4 text-xs" style={{ color: 'var(--color-text-muted)' }}>
-        <span>⏱ Uptime: {stats.uptime}</span>
-        <span>📦 Node {stats.nodeVersion}</span>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

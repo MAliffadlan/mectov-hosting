@@ -1,10 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Server, LayoutDashboard, PlusCircle, LogOut, User } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Button } from "@/components/ui/button";
 
-/**
- * Navbar
- * Top navigation bar with branding and nav links
- */
 const Navbar = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
@@ -12,73 +10,47 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="sticky top-0 z-40" style={{
-      background: 'linear-gradient(135deg, rgba(10, 14, 26, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%)',
-      backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid var(--color-border)',
-    }}>
+    <nav className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
+          
           {/* Brand */}
-          <Link to="/" className="flex items-center gap-3 no-underline">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-bold"
-              style={{
-                background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)',
-                color: 'white',
-              }}>
-              M
-            </div>
-            <div>
-              <span className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>
-                Mectov
-              </span>
-              <span className="text-lg font-light ml-1" style={{ color: 'var(--color-primary)' }}>
-                Panel
-              </span>
-            </div>
+          <Link to="/" className="flex items-center gap-2 mr-6 text-foreground">
+            <Server className="h-5 w-5 text-primary" />
+            <span className="font-semibold tracking-tight">Mectov</span>
+            <span className="font-light text-muted-foreground mr-4">Panel</span>
           </Link>
 
-          {/* Nav Links */}
-          <div className="flex items-center gap-2">
-            <Link
-              to="/"
-              className="btn btn-sm"
-              style={{
-                background: isActive('/') ? 'rgba(6, 182, 212, 0.15)' : 'transparent',
-                color: isActive('/') ? 'var(--color-primary)' : 'var(--color-text-secondary)',
-                border: isActive('/') ? '1px solid rgba(6, 182, 212, 0.3)' : '1px solid transparent',
-                textDecoration: 'none',
-              }}
+          {/* Desktop Nav */}
+          <div className="flex items-center gap-6 text-sm flex-1">
+            <Link 
+              to="/" 
+              className={`flex items-center gap-2 transition-colors hover:text-foreground/80 ${isActive('/') ? 'text-foreground font-medium' : 'text-foreground/60'}`}
             >
-              📊 Dashboard
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
             </Link>
-            <Link
-              to="/add"
-              className="btn btn-sm"
-              style={{
-                background: isActive('/add') ? 'rgba(6, 182, 212, 0.15)' : 'transparent',
-                color: isActive('/add') ? 'var(--color-primary)' : 'var(--color-text-secondary)',
-                border: isActive('/add') ? '1px solid rgba(6, 182, 212, 0.3)' : '1px solid transparent',
-                textDecoration: 'none',
-              }}
+            <Link 
+              to="/add" 
+              className={`flex items-center gap-2 transition-colors hover:text-foreground/80 ${isActive('/add') ? 'text-foreground font-medium' : 'text-foreground/60'}`}
             >
-              ➕ New Project
+              <PlusCircle className="h-4 w-4" />
+              New Project
             </Link>
-
-            {/* User Menu */}
-            <div className="flex items-center gap-3 ml-4 pl-4" style={{ borderLeft: '1px solid var(--color-border)' }}>
-              <span className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                👤 {user?.username}
-              </span>
-              <button
-                onClick={logout}
-                className="btn btn-sm btn-ghost"
-                style={{ color: 'var(--color-danger)' }}
-              >
-                Logout
-              </button>
-            </div>
           </div>
+
+          {/* User Menu */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground border-r pr-4 border-border h-5">
+              <User className="h-4 w-4" />
+              <span>{user?.username}</span>
+            </div>
+            <Button variant="ghost" size="sm" onClick={logout} className="text-muted-foreground hover:text-destructive">
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+
         </div>
       </div>
     </nav>

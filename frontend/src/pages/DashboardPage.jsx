@@ -1,19 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getProjects, startProject, stopProject, restartProject, deleteProject } from '../api/api';
-import ProjectCard from '../components/ProjectCard';
-import ServerStatus from '../components/ServerStatus';
-import LogModal from '../components/LogModal';
-import NginxModal from '../components/NginxModal';
+import { useNavigate } from 'react-router-dom';
+import { getProjects, startProject, stopProject, restartProject, deleteProject } from '@/api/api';
+import ProjectCard from '@/components/ProjectCard';
+import ServerStatus from '@/components/ServerStatus';
+import LogModal from '@/components/LogModal';
+import NginxModal from '@/components/NginxModal';
+import { Package, Plus, Rocket } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
-/**
- * DashboardPage
- * Main page showing all projects and server status
- */
 const DashboardPage = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [logModal, setLogModal] = useState(null); // { id, name }
-  const [nginxModal, setNginxModal] = useState(null); // { id, name }
+  const [logModal, setLogModal] = useState(null);
+  const [nginxModal, setNginxModal] = useState(null);
 
   const fetchProjects = useCallback(async () => {
     try {
@@ -65,65 +64,59 @@ const DashboardPage = () => {
   const stoppedCount = projects.filter((p) => p.status === 'stopped').length;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      
       {/* Server Status */}
-      <div className="mb-8">
-        <ServerStatus />
-      </div>
+      <ServerStatus />
 
       {/* Dashboard Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
-            📦 Projects
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-semibold tracking-tight flex items-center">
+            <Package className="mr-2 h-6 w-6" />
+            Projects
           </h2>
-          <div className="flex items-center gap-4 mt-1">
-            <span className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
-              {projects.length} total
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <span>{projects.length} total</span>
+            <span className="flex items-center text-green-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-1.5" />
+              {runningCount} running
             </span>
-            <span className="text-xs" style={{ color: 'var(--color-success)' }}>
-              ● {runningCount} running
-            </span>
-            <span className="text-xs" style={{ color: 'var(--color-danger)' }}>
-              ○ {stoppedCount} stopped
+            <span className="flex items-center text-destructive">
+              <span className="h-1.5 w-1.5 rounded-full border border-destructive mr-1.5" />
+              {stoppedCount} stopped
             </span>
           </div>
         </div>
 
-        <button
-          className="btn btn-primary"
-          onClick={() => window.location.href = '/add'}
-        >
-          ➕ New Project
-        </button>
+        <Button onClick={() => window.location.href = '/add'}>
+          <Plus className="mr-2 h-4 w-4" />
+          New Project
+        </Button>
       </div>
 
       {/* Projects Grid */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="spinner" />
-          <span className="ml-3 text-sm" style={{ color: 'var(--color-text-muted)' }}>
-            Loading projects...
-          </span>
+        <div className="flex items-center justify-center py-32 border rounded-xl border-dashed">
+          <span className="spinner mr-3" />
+          <span className="text-sm text-muted-foreground">Loading projects...</span>
         </div>
       ) : projects.length === 0 ? (
-        <div className="glass-card p-12 text-center animate-fade-in">
-          <div className="text-5xl mb-4">🚀</div>
-          <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--color-text-primary)' }}>
-            No projects yet
-          </h3>
-          <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>
+        <div className="flex flex-col items-center justify-center py-32 border rounded-xl border-dashed bg-muted/20">
+          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+            <Rocket className="h-6 w-6 text-primary" />
+          </div>
+          <h3 className="text-lg font-semibold mb-1">No projects yet</h3>
+          <p className="text-sm text-muted-foreground mb-6">
             Create your first project to get started.
           </p>
-          <button
-            className="btn btn-primary"
-            onClick={() => window.location.href = '/add'}
-          >
-            ➕ Create Project
-          </button>
+          <Button onClick={() => window.location.href = '/add'}>
+            <Plus className="mr-2 h-4 w-4" />
+            Create Project
+          </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
@@ -139,7 +132,7 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* Log Modal */}
+      {/* Modals */}
       {logModal && (
         <LogModal
           projectId={logModal.id}
@@ -148,7 +141,6 @@ const DashboardPage = () => {
         />
       )}
 
-      {/* Nginx Modal */}
       {nginxModal && (
         <NginxModal
           projectId={nginxModal.id}

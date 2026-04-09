@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createProject } from '../api/api';
+import { createProject } from '@/api/api';
+import { ArrowLeft, Rocket, AlertCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
-/**
- * AddProjectPage
- * Form to create a new project
- */
 const AddProjectPage = () => {
   const [name, setName] = useState('');
   const [port, setPort] = useState('');
@@ -19,7 +20,6 @@ const AddProjectPage = () => {
     e.preventDefault();
     setError('');
 
-    // Validate port
     const portNum = parseInt(port, 10);
     if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
       setError('Port must be a number between 1 and 65535.');
@@ -38,146 +38,117 @@ const AddProjectPage = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <button
-          onClick={() => navigate('/')}
-          className="btn btn-ghost btn-sm mb-4"
-        >
-          ← Back to Dashboard
-        </button>
-        <h2 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
-          ➕ New Project
-        </h2>
-        <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>
-          Deploy a new application to your server
-        </p>
-      </div>
-
-      <div className="glass-card p-8 animate-fade-in">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        onClick={() => navigate('/')}
+        className="text-muted-foreground -ml-2"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
+      </Button>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">New Project</CardTitle>
+          <CardDescription>Deploy a new application to your server</CardDescription>
+        </CardHeader>
+        
         <form onSubmit={handleSubmit}>
-          {error && (
-            <div className="mb-6 p-4 rounded-lg text-sm" style={{
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              color: 'var(--color-danger)',
-            }}>
-              {error}
-            </div>
-          )}
+          <CardContent className="space-y-6">
+            {error && (
+              <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+                <AlertCircle className="h-4 w-4" />
+                {error}
+              </div>
+            )}
 
-          {/* Project Name */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-              Project Name
-            </label>
-            <input
-              id="project-name"
-              type="text"
-              className="input"
-              placeholder="e.g., my-portfolio"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              autoFocus
-              required
-            />
-            <p className="text-xs mt-1.5" style={{ color: 'var(--color-text-muted)' }}>
-              A friendly name for your project
-            </p>
-          </div>
-
-          {/* Port */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-              Port
-            </label>
-            <input
-              id="project-port"
-              type="number"
-              className="input"
-              placeholder="e.g., 3000"
-              value={port}
-              onChange={(e) => setPort(e.target.value)}
-              min="1"
-              max="65535"
-              required
-            />
-            <p className="text-xs mt-1.5" style={{ color: 'var(--color-text-muted)' }}>
-              The port your application runs on (1-65535)
-            </p>
-          </div>
-
-          {/* Domain */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-              Domain
-            </label>
-            <input
-              id="project-domain"
-              type="text"
-              className="input"
-              placeholder="e.g., app.example.com"
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-              required
-            />
-            <p className="text-xs mt-1.5" style={{ color: 'var(--color-text-muted)' }}>
-              The domain name to route traffic to this project
-            </p>
-          </div>
-
-          {/* Preview */}
-          {name && port && domain && (
-            <div className="mb-6 p-4 rounded-xl animate-fade-in" style={{
-              background: 'rgba(6, 182, 212, 0.05)',
-              border: '1px solid rgba(6, 182, 212, 0.2)',
-            }}>
-              <p className="text-xs font-medium mb-2" style={{ color: 'var(--color-primary)' }}>
-                📋 Preview
+            <div className="space-y-2">
+              <Label htmlFor="project-name">Project Name</Label>
+              <Input
+                id="project-name"
+                placeholder="e.g., my-portfolio"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+                required
+              />
+              <p className="text-[0.8rem] text-muted-foreground">
+                A friendly display name for your project
               </p>
-              <div className="grid grid-cols-3 gap-3 text-sm">
-                <div>
-                  <span className="text-xs block" style={{ color: 'var(--color-text-muted)' }}>Name</span>
-                  <span style={{ color: 'var(--color-text-primary)' }}>{name}</span>
-                </div>
-                <div>
-                  <span className="text-xs block" style={{ color: 'var(--color-text-muted)' }}>Port</span>
-                  <span style={{ color: 'var(--color-accent)' }}>:{port}</span>
-                </div>
-                <div>
-                  <span className="text-xs block" style={{ color: 'var(--color-text-muted)' }}>Domain</span>
-                  <span style={{ color: 'var(--color-primary)' }}>{domain}</span>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="project-port">Port</Label>
+              <Input
+                id="project-port"
+                type="number"
+                placeholder="e.g., 3000"
+                value={port}
+                onChange={(e) => setPort(e.target.value)}
+                min="1"
+                max="65535"
+                required
+              />
+              <p className="text-[0.8rem] text-muted-foreground">
+                The local port your application runs on
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="project-domain">Domain</Label>
+              <Input
+                id="project-domain"
+                placeholder="e.g., app.example.com"
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+                required
+              />
+              <p className="text-[0.8rem] text-muted-foreground">
+                The external domain name to route traffic to this project
+              </p>
+            </div>
+
+            {/* Preview Section */}
+            {name && port && domain && (
+              <div className="bg-muted p-4 rounded-md border text-sm mt-6">
+                <div className="font-semibold text-xs text-primary mb-3">PREVIEW</div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground block">Name</span>
+                    <span className="font-medium text-foreground">{name}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground block">Route</span>
+                    <span className="font-mono text-primary flex items-center">
+                      {domain} <ArrowLeft className="h-3 w-3 mx-1 inline rotate-180" /> :{port}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Submit */}
-          <div className="flex items-center gap-3">
-            <button
-              id="create-project-button"
-              type="submit"
-              className="btn btn-primary py-3 px-8 text-sm font-semibold"
-              disabled={loading}
-            >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="spinner" /> Creating...
-                </span>
-              ) : (
-                '🚀 Create Project'
-              )}
-            </button>
-            <button
-              type="button"
-              className="btn btn-ghost py-3 px-6"
-              onClick={() => navigate('/')}
-            >
+            )}
+          </CardContent>
+          
+          <CardFooter className="pt-2 border-t mt-6 flex justify-between">
+            <Button variant="ghost" type="button" onClick={() => navigate('/')}>
               Cancel
-            </button>
-          </div>
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <span className="spinner mr-2" /> Creating...
+                </>
+              ) : (
+                <>
+                  <Rocket className="mr-2 h-4 w-4" /> Create Project
+                </>
+              )}
+            </Button>
+          </CardFooter>
         </form>
-      </div>
+      </Card>
+      
     </div>
   );
 };

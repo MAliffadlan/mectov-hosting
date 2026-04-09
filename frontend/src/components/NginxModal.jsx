@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { getNginxConfig } from '../api/api';
+import { getNginxConfig } from '@/api/api';
+import { Settings, Copy, Check } from 'lucide-react';
+import { 
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter 
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
-/**
- * NginxModal
- * Displays simulated Nginx reverse proxy config for a project
- */
 const NginxModal = ({ projectId, projectName, onClose }) => {
   const [config, setConfig] = useState('');
   const [loading, setLoading] = useState(true);
@@ -24,15 +25,6 @@ const NginxModal = ({ projectId, projectName, onClose }) => {
     fetchConfig();
   }, [projectId]);
 
-  // Close on Escape key
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
-
   const handleCopy = () => {
     navigator.clipboard.writeText(config);
     setCopied(true);
@@ -40,57 +32,49 @@ const NginxModal = ({ projectId, projectName, onClose }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-4" style={{ borderBottom: '1px solid var(--color-border)' }}>
-          <div>
-            <h3 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-              ⚙️ Nginx Config — {projectName}
-            </h3>
-            <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>
-              Simulated reverse proxy configuration
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button onClick={handleCopy} className="btn btn-sm btn-primary">
-              {copied ? '✅ Copied!' : '📋 Copy'}
-            </button>
-            <button onClick={onClose} className="btn btn-sm btn-ghost">✕</button>
-          </div>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-3xl flex flex-col max-h-[85vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center">
+            <Settings className="mr-2 h-5 w-5" />
+            Nginx Config — {projectName}
+          </DialogTitle>
+          <DialogDescription>
+            Simulated reverse proxy configuration for this domain.
+          </DialogDescription>
+        </DialogHeader>
 
-        {/* Config Content */}
-        <div className="flex-1 overflow-hidden p-4">
+        <div className="flex-1 overflow-hidden flex flex-col mt-2">
           {loading ? (
-            <div className="flex items-center justify-center py-10">
-              <div className="spinner" />
-              <span className="ml-3 text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                Generating config...
-              </span>
+            <div className="flex-1 flex items-center justify-center p-10 border rounded-md">
+              <span className="spinner mr-3" />
+              <span className="text-sm text-muted-foreground">Generating config...</span>
             </div>
           ) : (
-            <pre className="log-container" style={{
-              whiteSpace: 'pre-wrap',
-              color: 'var(--color-primary)',
-              fontSize: '12px',
-              lineHeight: '1.8',
-            }}>
-              {config}
-            </pre>
+            <div className="relative flex-1">
+              <pre className="h-full overflow-y-auto p-4 log-container !text-primary min-h-[300px]">
+                {config}
+              </pre>
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                className="absolute top-4 right-4 shadow-sm"
+                onClick={handleCopy}
+              >
+                {copied ? <Check className="h-4 w-4 mr-2 text-green-500" /> : <Copy className="h-4 w-4 mr-2" />}
+                {copied ? 'Copied' : 'Copy'}
+              </Button>
+            </div>
           )}
         </div>
 
-        {/* Footer note */}
-        <div className="p-4" style={{ borderTop: '1px solid var(--color-border)' }}>
-          <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
-            ⚠️ This config is simulated. To use in production, save to{' '}
-            <code style={{ color: 'var(--color-accent)' }}>/etc/nginx/sites-available/</code>{' '}
-            and run <code style={{ color: 'var(--color-accent)' }}>nginx -t && systemctl reload nginx</code>.
+        <DialogFooter className="mt-4 sm:justify-start">
+          <p className="text-xs text-muted-foreground bg-muted p-3 rounded-md w-full">
+            <strong className="text-foreground">Note:</strong> This config is simulated. To use in production, save to <code className="bg-background px-1 py-0.5 rounded border">/etc/nginx/sites-available/</code> and run <code className="bg-background px-1 py-0.5 rounded border">nginx -t && systemctl reload nginx</code>.
           </p>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
