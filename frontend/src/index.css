@@ -41,7 +41,7 @@
 @layer base {
   :root {
     /* Light Cream & Sage Green Theme */
-    --background: 90 20% 95%; /* #F3F4F1 - very light sage cream */
+    --background: 110 9% 88%; /* #E0E5DF - medium light sage gray */
     --foreground: 224 71.4% 4.1%; 
 
     --card: 0 0% 100%; 
@@ -78,12 +78,12 @@
     @apply border-border;
   }
   body {
-    background-color: #F3F4F1;
+    background-color: #E0E5DF;
     color: hsl(224 71.4% 4.1%);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   html {
-    background-color: #F3F4F1;
+    background-color: #E0E5DF;
   }
 }
 
