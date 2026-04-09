@@ -2,85 +2,14 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-  /* Shadcn standard theme variables -> translated to Tailwind v4 theme */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --radius-xl: var(--radius);
-  --radius-lg: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 8px);
-  --radius-sm: calc(var(--radius) - 12px);
 }
 
 @layer base {
-  :root {
-    /* Light Cream & Sage Green Theme */
-    --background: 139 18% 84%; /* Equivalent HSL for #CFDFD4 (Soft green) */
-    --foreground: 224 71.4% 4.1%; 
-
-    --card: 0 0% 100%; 
-    --card-foreground: 224 71.4% 4.1%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-
-    --primary: 145 20% 43%; /* Sage Green / Muted Green */
-    --primary-foreground: 0 0% 100%; /* white */
-
-    --secondary: 40 10% 90%; 
-    --secondary-foreground: 224 71.4% 4.1%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%; /* light red */
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 145 20% 43%; /* Sage green focus ring */
-    
-    --radius: 1.5rem; /* Very rounded like the image */
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
   body {
     background-color: #CFDFD4;
-    color: hsl(224 71.4% 4.1%);
+    color: #1a1e23;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
   }
   html {
     background-color: #CFDFD4;
@@ -88,16 +17,38 @@
 }
 
 /* 
-  Keep utility classes for custom components that are not strictly shadcn ui
+  Custom styling for exact precise aesthetics
+  These are classes that are used globally
+*/
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 24px -6px rgba(0, 0, 0, 0.05);
+  border-radius: 1.5rem;
+}
+
+.pill-button {
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pill-button:active {
+  transform: scale(0.96);
+}
+
+/* 
+  Keep utility classes for custom components that are not strictly UI
   (like the log console)
 */
 .log-container {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 12px;
   line-height: 1.8;
-  background-color: hsl(220.9 39.3% 11%);
-  border: 1px solid hsl(var(--border));
-  border-radius: var(--radius);
+  background-color: #1e2530;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
   padding: 16px;
   overflow-y: auto;
   max-height: 500px;
@@ -109,23 +60,23 @@
 }
 
 .log-line .time {
-  color: hsl(var(--muted-foreground));
+  color: #8b9bb4;
 }
 
 .log-line .level-info {
-  color: hsl(210 100% 70%);
+  color: #7ab4ff;
 }
 
 .log-line .level-warn {
-  color: hsl(45 100% 60%);
+  color: #ffca66;
 }
 
 .log-line .level-debug {
-  color: hsl(280 100% 70%);
+  color: #d199ff;
 }
 
 .log-line .level-error {
-  color: hsl(0 100% 65%);
+  color: #ff6b6b;
 }
 
 /* Loading spinner */

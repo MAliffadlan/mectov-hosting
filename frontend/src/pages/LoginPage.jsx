@@ -1,103 +1,107 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Server } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { login as apiLogin } from '@/api/api';
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { login } from '@/api/api';
+import { Hexagon, Lock, User } from 'lucide-react';
 import { toast } from "sonner";
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const { loginUser } = useAuth();
+  
+  const { login: authLogin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
-
+    
     try {
-      const { data } = await apiLogin(username, password);
-      loginUser(data.token, data.user);
-      toast.success('Welcome back!');
-      navigate('/');
+      const { data } = await login(username, password);
+      authLogin(data.token);
+      toast.success('Welcome back logged in successfully!');
+      
+      const from = location.state?.from?.pathname || "/";
+      navigate(from, { replace: true });
     } catch (err) {
-      toast.error('Login failed');
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
+      toast.error('Invalid username or password');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-3 items-center text-center">
-          <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-            <Server className="h-6 w-6 text-primary" />
+    <div className="min-h-screen flex items-center justify-center bg-[#CFDFD4] p-4 font-sans">
+      <div className="max-w-md w-full">
+        {/* Logo/Header */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-16 h-16 bg-white rounded-2xl shadow-xl shadow-black/5 flex items-center justify-center mb-6 transform -rotate-6">
+            <Hexagon className="w-8 h-8 text-green-600" />
           </div>
-          <CardTitle className="text-2xl">Mectov Panel</CardTitle>
-          <CardDescription>Personal Hosting Management</CardDescription>
-        </CardHeader>
-        
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <div className="p-3 text-sm font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
-                {error}
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Mectov Panel</h1>
+          <p className="text-gray-600 mt-2 font-medium">Personal Hosting Management</p>
+        </div>
+
+        {/* Login Form */}
+        <div className="glass-panel overflow-hidden">
+          <form onSubmit={handleLogin} className="p-8 space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-700 ml-1">Username</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <User className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    placeholder="admin"
+                    className="w-full pl-10 pr-4 py-3 bg-white/60 border border-white focus:bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
+                  />
+                </div>
               </div>
-            )}
-            
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="admin"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                autoFocus
-                required
-              />
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-700 ml-1">Password</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="••••••••"
+                    className="w-full pl-10 pr-4 py-3 bg-white/60 border border-white focus:bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
+                  />
+                </div>
+              </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </CardContent>
-          
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`pill-button w-full flex justify-center py-3 px-4 shadow-lg shadow-green-600/20 text-sm font-bold text-white transition-colors ${
+                loading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+              }`}
+            >
               {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="spinner" /> Signing in...
-                </span>
-              ) : (
-                'Sign In'
-              )}
-            </Button>
-            <div className="text-xs text-center text-muted-foreground">
-              Default: admin / admin123
-            </div>
-          </CardFooter>
-        </form>
-      </Card>
+                <div className="flex items-center">
+                  <div className="spinner mr-2 border-white/20 border-r-white"></div>
+                  Authenticating...
+                </div>
+              ) : 'Sign In'}
+            </button>
+          </form>
+          <div className="px-8 py-4 bg-gray-50/50 border-t border-white/40 text-center">
+            <p className="text-xs text-gray-500 font-medium">Secured with JWT authentication</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

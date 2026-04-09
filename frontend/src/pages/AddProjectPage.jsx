@@ -1,157 +1,163 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createProject } from '@/api/api';
-import { ArrowLeft, Rocket, AlertCircle } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { ArrowLeft, Rocket, GitBranch, Globe, HardDrive } from 'lucide-react';
 
 const AddProjectPage = () => {
-  const [name, setName] = useState('');
-  const [port, setPort] = useState('');
-  const [domain, setDomain] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    repoUrl: '',
+    domain: '',
+    port: '',
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    const portNum = parseInt(port, 10);
-    if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
-      setError('Port must be a number between 1 and 65535.');
-      return;
-    }
-
     setLoading(true);
+    
     try {
-      await createProject({ name, port: portNum, domain });
+      await createProject(formData);
       toast.success('Project created successfully!');
       navigate('/');
     } catch (err) {
-      toast.error('Failed to create project');
-      setError(err.response?.data?.error || 'Failed to create project.');
+      toast.error(err.response?.data?.error || 'Failed to create project');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      
-      <Button 
-        variant="ghost" 
-        size="sm" 
-        onClick={() => navigate('/')}
-        className="text-muted-foreground -ml-2"
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
-      </Button>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">New Project</CardTitle>
-          <CardDescription>Deploy a new application to your server</CardDescription>
-        </CardHeader>
+    <div className="max-w-3xl mx-auto w-full pb-12">
+      <div className="mb-8">
+        <button 
+          onClick={() => navigate('/')} 
+          className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" /> Back to Dashboard
+        </button>
+        <h1 className="text-3xl font-bold text-gray-900 tracking-tight flex items-center">
+          <Rocket className="w-8 h-8 mr-3 text-green-600" />
+          Deploy New Application
+        </h1>
+        <p className="text-gray-500 mt-2">
+          Configure a new application from a remote git repository or local deployment.
+        </p>
+      </div>
+
+      <div className="glass-panel overflow-hidden">
+        <div className="bg-gray-50/50 px-8 py-4 border-b border-gray-100 flex items-center">
+          <h2 className="font-semibold text-gray-800">Project Details</h2>
+        </div>
         
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-6">
-            {error && (
-              <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
-                <AlertCircle className="h-4 w-4" />
-                {error}
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          <div className="space-y-4">
+            
+            {/* Project Name */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Project Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g. My Awesome App"
+                required
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
+              />
+              <p className="text-xs text-gray-500 mt-1.5">A unique identifier for your application.</p>
+            </div>
+
+            {/* Repository URL */}
+            <div>
+              <label htmlFor="repoUrl" className="flex items-center text-sm font-semibold text-gray-700 mb-1.5">
+                <GitBranch className="w-4 h-4 mr-1.5 text-gray-400" />
+                Repository URL
+              </label>
+              <input
+                id="repoUrl"
+                name="repoUrl"
+                value={formData.repoUrl}
+                onChange={handleChange}
+                placeholder="https://github.com/username/repo.git"
+                required
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm font-mono text-sm"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+              {/* Domain */}
+              <div>
+                <label htmlFor="domain" className="flex items-center text-sm font-semibold text-gray-700 mb-1.5">
+                  <Globe className="w-4 h-4 mr-1.5 text-gray-400" />
+                  Domain Name
+                </label>
+                <input
+                  id="domain"
+                  name="domain"
+                  value={formData.domain}
+                  onChange={handleChange}
+                  placeholder="app.example.com"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm font-mono text-sm"
+                />
               </div>
-            )}
 
-            <div className="space-y-2">
-              <Label htmlFor="project-name">Project Name</Label>
-              <Input
-                id="project-name"
-                placeholder="e.g., my-portfolio"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                autoFocus
-                required
-              />
-              <p className="text-[0.8rem] text-muted-foreground">
-                A friendly display name for your project
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="project-port">Port</Label>
-              <Input
-                id="project-port"
-                type="number"
-                placeholder="e.g., 3000"
-                value={port}
-                onChange={(e) => setPort(e.target.value)}
-                min="1"
-                max="65535"
-                required
-              />
-              <p className="text-[0.8rem] text-muted-foreground">
-                The local port your application runs on
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="project-domain">Domain</Label>
-              <Input
-                id="project-domain"
-                placeholder="e.g., app.example.com"
-                value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-                required
-              />
-              <p className="text-[0.8rem] text-muted-foreground">
-                The external domain name to route traffic to this project
-              </p>
-            </div>
-
-            {/* Preview Section */}
-            {name && port && domain && (
-              <div className="bg-muted p-4 rounded-md border text-sm mt-6">
-                <div className="font-semibold text-xs text-primary mb-3">PREVIEW</div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="space-y-1">
-                    <span className="text-xs text-muted-foreground block">Name</span>
-                    <span className="font-medium text-foreground">{name}</span>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-xs text-muted-foreground block">Route</span>
-                    <span className="font-mono text-primary flex items-center">
-                      {domain} <ArrowLeft className="h-3 w-3 mx-1 inline rotate-180" /> :{port}
-                    </span>
-                  </div>
-                </div>
+              {/* Port */}
+              <div>
+                <label htmlFor="port" className="flex items-center text-sm font-semibold text-gray-700 mb-1.5">
+                  <HardDrive className="w-4 h-4 mr-1.5 text-gray-400" />
+                  Internal Port
+                </label>
+                <input
+                  id="port"
+                  name="port"
+                  value={formData.port}
+                  onChange={handleChange}
+                  placeholder="3000"
+                  required
+                  type="number"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm font-mono text-sm"
+                />
               </div>
-            )}
-          </CardContent>
+            </div>
+
+          </div>
           
-          <CardFooter className="pt-2 border-t mt-6 flex justify-between">
-            <Button variant="ghost" type="button" onClick={() => navigate('/')}>
+          <div className="pt-6 border-t border-gray-100 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="pill-button px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50"
+            >
               Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`pill-button px-6 py-2.5 text-sm font-bold shadow-md shadow-green-600/20 text-white ${
+                loading 
+                ? 'bg-green-400 cursor-not-allowed opacity-80' 
+                : 'bg-green-600 hover:bg-green-700'
+              }`}
+            >
               {loading ? (
-                <>
-                  <span className="spinner mr-2" /> Creating...
-                </>
-              ) : (
-                <>
-                  <Rocket className="mr-2 h-4 w-4" /> Create Project
-                </>
-              )}
-            </Button>
-          </CardFooter>
+                <div className="flex items-center">
+                  <div className="spinner mr-2 border-white/20 border-r-white"></div>
+                  Deploying...
+                </div>
+              ) : 'Deploy Application'}
+            </button>
+          </div>
         </form>
-      </Card>
-      
+      </div>
     </div>
   );
 };

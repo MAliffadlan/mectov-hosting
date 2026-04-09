@@ -7,7 +7,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import AddProjectPage from './pages/AddProjectPage';
 import SettingsPage from './pages/SettingsPage';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from 'sonner';
 
 /**
  * Layout wrapper for authenticated pages
@@ -80,7 +80,7 @@ const App = () => (
   <AuthProvider>
     <BrowserRouter>
       <AppRoutes />
-      <Toaster />
+      <Toaster richColors position="top-center" />
     </BrowserRouter>
   </AuthProvider>
 );

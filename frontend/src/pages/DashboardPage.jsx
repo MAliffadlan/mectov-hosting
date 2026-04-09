@@ -6,9 +6,6 @@ import ServerStatus from '@/components/ServerStatus';
 import LogModal from '@/components/LogModal';
 import NginxModal from '@/components/NginxModal';
 import { Package, Plus, Rocket } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
 const DashboardPage = () => {
@@ -63,7 +60,6 @@ const DashboardPage = () => {
   };
 
   const handleDelete = async (id) => {
-    // Note: Delete confirmation is now handled inside ProjectCard using AlertDialog
     try {
       await deleteProject(id);
       toast.success('Project deleted');
@@ -87,7 +83,7 @@ const DashboardPage = () => {
   const stoppedCount = projects.filter((p) => p.status === 'stopped').length;
 
   return (
-    <div className="space-y-6 w-full pb-4">
+    <div className="space-y-8 w-full pb-8">
       
       {/* Server Status */}
       <ServerStatus />
@@ -95,62 +91,64 @@ const DashboardPage = () => {
       {/* Dashboard Header */}
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <h2 className="text-2xl font-semibold tracking-tight flex items-center">
-            <Package className="mr-2 h-6 w-6" />
+          <h2 className="text-3xl font-bold tracking-tight text-gray-800 flex items-center">
+            <Package className="mr-3 h-7 w-7 text-green-700" />
             Projects
           </h2>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-4 text-sm font-medium text-gray-500">
             <span>{projects.length} total</span>
-            <span className="flex items-center text-green-500">
-              <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-1.5" />
+            <span className="flex items-center text-green-600">
+              <span className="h-2 w-2 rounded-full bg-green-500 mr-2 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
               {runningCount} running
             </span>
-            <span className="flex items-center text-destructive">
-              <span className="h-1.5 w-1.5 rounded-full border border-destructive mr-1.5" />
+            <span className="flex items-center text-gray-400">
+              <span className="h-2 w-2 rounded-full border-2 border-gray-400 mr-2" />
               {stoppedCount} stopped
             </span>
           </div>
         </div>
 
-        <Button onClick={() => window.location.href = '/add'}>
-          <Plus className="mr-2 h-4 w-4" />
+        <button 
+          onClick={() => window.location.href = '/add'}
+          className="pill-button inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold bg-white text-gray-800 shadow-sm border border-gray-200/60 hover:bg-gray-50 hover:border-gray-300"
+        >
+          <Plus className="mr-2 h-4 w-4 text-green-600" />
           New Project
-        </Button>
+        </button>
       </div>
 
       {/* Projects Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="flex flex-col">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <Skeleton className="h-5 w-32" />
-                    <Skeleton className="h-3 w-24" />
-                  </div>
-                  <Skeleton className="h-5 w-16" />
+            <div key={i} className="glass-panel p-6 flex flex-col gap-4 animate-pulse">
+              <div className="flex items-start justify-between">
+                <div className="space-y-2">
+                  <div className="h-6 w-32 bg-gray-200 rounded-lg"></div>
+                  <div className="h-4 w-24 bg-gray-200 rounded-md"></div>
                 </div>
-              </CardHeader>
-              <CardContent className="pb-4 flex-1">
-                <Skeleton className="h-16 w-full rounded-lg" />
-              </CardContent>
-            </Card>
+                <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
+              </div>
+              <div className="h-24 w-full bg-gray-100 rounded-xl mt-2"></div>
+            </div>
           ))}
         </div>
       ) : projects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-32 border rounded-xl border-dashed bg-muted/20">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-            <Rocket className="h-6 w-6 text-primary" />
+        <div className="flex flex-col items-center justify-center py-32 glass-panel border border-dashed border-gray-300/50">
+          <div className="h-16 w-16 rounded-full bg-green-100/50 flex items-center justify-center mb-5">
+            <Rocket className="h-8 w-8 text-green-600" />
           </div>
-          <h3 className="text-lg font-semibold mb-1">No projects yet</h3>
-          <p className="text-sm text-muted-foreground mb-6">
-            Create your first project to get started.
+          <h3 className="text-xl font-bold mb-2 text-gray-800">No projects yet</h3>
+          <p className="text-sm font-medium text-gray-500 mb-8 max-w-sm text-center">
+            Deploy your first application and let Mectov handle the rest.
           </p>
-          <Button onClick={() => window.location.href = '/add'}>
-            <Plus className="mr-2 h-4 w-4" />
+          <button 
+            onClick={() => window.location.href = '/add'}
+            className="pill-button inline-flex items-center justify-center px-6 py-3 text-sm font-bold bg-green-600 text-white shadow-lg shadow-green-600/20 hover:bg-green-700"
+          >
+            <Plus className="mr-2 h-5 w-5" />
             Create Project
-          </Button>
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

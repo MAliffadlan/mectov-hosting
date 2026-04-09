@@ -1,164 +1,147 @@
 import { useState } from 'react';
-import { 
-  Play, Square, RotateCw, FileText, Settings, Trash2, 
-  Globe, Cable, Clock 
-} from 'lucide-react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { Play, Square, RotateCw, Trash2, Box, Globe, Activity, TerminalSquare, Settings } from 'lucide-react';
 
 const ProjectCard = ({ project, onStart, onStop, onRestart, onDelete, onViewLogs, onViewNginx }) => {
-  const [loading, setLoading] = useState(null); // 'start' | 'stop' | 'restart' | 'delete' | null
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const isRunning = project.status === 'running';
 
-  const handleAction = async (action, callback) => {
-    setLoading(action);
-    try {
-      await callback();
-    } finally {
-      setLoading(null);
-    }
-  };
-
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <CardTitle className="text-base font-semibold flex items-center">
-              {project.name}
-            </CardTitle>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <Clock className="mr-1 h-3 w-3" />
-              Created {new Date(project.createdAt).toLocaleDateString()}
+    <>
+      <div className="glass-panel p-6 flex flex-col group transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1">
+        
+        {/* Header */}
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h3 className="font-bold text-lg text-gray-800 tracking-tight">{project.name}</h3>
+            <div className="flex items-center text-xs font-medium text-gray-500 mt-1">
+              <Activity className="w-3 h-3 mr-1" />
+              Created {new Date(project.created_at).toLocaleDateString()}
             </div>
           </div>
-          <Badge 
-            variant={isRunning ? "default" : "secondary"} 
-            className={isRunning ? "bg-green-500/10 text-green-500 hover:bg-green-500/20" : "bg-destructive/10 text-destructive hover:bg-destructive/20"}
-          >
-            <span className={`h-1.5 w-1.5 rounded-full mr-1.5 ${isRunning ? 'bg-green-500' : 'bg-destructive'}`} />
+          
+          <div className={`px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 ${
+            isRunning 
+            ? 'bg-green-100 text-green-700' 
+            : 'bg-gray-100 text-gray-500'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isRunning ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-gray-400 border border-gray-500'}`}></span>
             {isRunning ? 'Running' : 'Stopped'}
-          </Badge>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="pb-4 flex-1">
-        <div className="grid grid-cols-2 gap-3 bg-muted/50 rounded-lg p-3">
-          <div className="space-y-1">
-            <span className="flex items-center text-xs text-muted-foreground">
-              <Globe className="mr-1.5 h-3 w-3" /> Domain
-            </span>
-            <span className="text-sm font-medium tracking-tight truncate block" title={project.domain}>
-              {project.domain}
-            </span>
-          </div>
-          <div className="space-y-1 border-l pl-3">
-            <span className="flex items-center text-xs text-muted-foreground">
-              <Cable className="mr-1.5 h-3 w-3" /> Port
-            </span>
-            <span className="text-sm font-medium font-mono text-primary">
-              :{project.port}
-            </span>
           </div>
         </div>
-      </CardContent>
 
-      <CardFooter className="pt-0 flex flex-wrap gap-2">
-        {!isRunning ? (
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20 hover:text-green-600"
-            disabled={loading !== null}
-            onClick={() => handleAction('start', () => onStart(project.id))}
-          >
-            {loading === 'start' ? <span className="spinner mr-2" /> : <Play className="mr-2 h-3.5 w-3.5 fill-current" />} Start
-          </Button>
-        ) : (
-          <Button 
-            size="sm" 
-            variant="outline"
-            className="bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20 hover:text-destructive"
-            disabled={loading !== null}
-            onClick={() => handleAction('stop', () => onStop(project.id))}
-          >
-            {loading === 'stop' ? <span className="spinner mr-2" /> : <Square className="mr-2 h-3.5 w-3.5 fill-current" />} Stop
-          </Button>
-        )}
+        {/* Info Grid */}
+        <div className="grid grid-cols-2 gap-y-4 gap-x-2 my-4 text-sm">
+          <div>
+            <div className="flex items-center text-gray-500 text-xs font-semibold mb-1">
+              <Globe className="w-3.5 h-3.5 mr-1" /> Domain
+            </div>
+            <div className="font-medium text-gray-800 break-all">{project.domain || '-'}</div>
+          </div>
+          
+          <div className="pl-4 border-l border-gray-200/60">
+            <div className="flex items-center text-gray-500 text-xs font-semibold mb-1">
+              <Box className="w-3.5 h-3.5 mr-1" /> Port
+            </div>
+            <div className="font-mono text-gray-800 bg-gray-100/50 px-1.5 rounded inline-block">:{project.port}</div>
+          </div>
+        </div>
 
-        <Button 
-          size="sm" 
-          variant="outline"
-          disabled={loading !== null}
-          onClick={() => handleAction('restart', () => onRestart(project.id))}
-        >
-          {loading === 'restart' ? <span className="spinner mr-2" /> : <RotateCw className="mr-2 h-3.5 w-3.5" />} Restart
-        </Button>
+        <div className="flex-grow"></div>
+        <hr className="border-gray-200/60 my-4" />
 
-        <Button 
-          size="sm" 
-          variant="ghost"
-          disabled={loading !== null}
-          onClick={() => onViewLogs(project.id)}
-        >
-          <FileText className="mr-2 h-3.5 w-3.5" /> Logs
-        </Button>
-
-        <Button 
-          size="sm" 
-          variant="ghost"
-          disabled={loading !== null}
-          onClick={() => onViewNginx(project.id)}
-        >
-          <Settings className="mr-2 h-3.5 w-3.5" /> Nginx
-        </Button>
-
-        <div className="flex-1" />
-
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button 
-              size="sm" 
-              variant="ghost"
-              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-              disabled={loading !== null}
-            >
-              {loading === 'delete' ? <span className="spinner" /> : <Trash2 className="h-4 w-4" />}
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action will delete the <strong className="text-foreground">{project.name}</strong> project from the panel. 
-                This will also terminate the running mock container (if any).
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={() => handleAction('delete', () => onDelete(project.id))}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+        {/* Actions */}
+        <div className="flex items-center justify-between">
+          <div className="flex space-x-2">
+            {!isRunning ? (
+              <button 
+                onClick={() => onStart(project.id)}
+                className="pill-button px-3.5 py-1.5 text-xs font-semibold bg-gray-800 text-white hover:bg-black inline-flex items-center"
               >
-                Delete Project
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </CardFooter>
-    </Card>
+                <Play className="w-3.5 h-3.5 mr-1.5" /> Start
+              </button>
+            ) : (
+              <button 
+                onClick={() => onStop(project.id)}
+                className="pill-button px-3.5 py-1.5 text-xs font-semibold bg-white border border-gray-200 text-gray-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 inline-flex items-center"
+              >
+                <Square className="w-3.5 h-3.5 mr-1.5" /> Stop
+              </button>
+            )}
+
+            <button 
+              onClick={() => onRestart(project.id)}
+              disabled={!isRunning}
+              className={`pill-button px-3.5 py-1.5 text-xs font-semibold border inline-flex items-center ${
+                isRunning 
+                ? 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50' 
+                : 'bg-gray-50 border-gray-100 text-gray-400 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <RotateCw className="w-3.5 h-3.5 mr-1.5" /> Restart
+            </button>
+          </div>
+          
+          <div className="flex space-x-1">
+            <button 
+              onClick={() => onViewLogs(project.id)}
+              className="p-2 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors tooltip-trigger"
+              title="View Logs"
+            >
+              <TerminalSquare className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={() => onViewNginx(project.id)}
+              className="p-2 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+              title="Nginx Config"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={() => setShowDeleteModal(true)}
+              className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+              title="Delete Project"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Custom Delete Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6">
+              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Delete Project</h2>
+              <p className="text-gray-500 text-sm">
+                Are you sure you want to delete <strong>{project.name}</strong>? This action cannot be undone. All containers, files, and configurations will be permanently removed.
+              </p>
+            </div>
+            <div className="bg-gray-50 px-6 py-4 flex justify-end gap-3 rounded-b-2xl border-t border-gray-100">
+              <button 
+                onClick={() => setShowDeleteModal(false)}
+                className="pill-button px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  onDelete(project.id);
+                  setShowDeleteModal(false);
+                }}
+                className="pill-button px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 shadow-md shadow-red-600/20"
+              >
+                Yes, delete project
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

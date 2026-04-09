@@ -51,6 +51,7 @@ export const getProjectLogs = (id) => api.get(`/projects/${id}/logs`);
 
 // --- Nginx Config ---
 export const getNginxConfig = (id) => api.get(`/projects/${id}/nginx-config`);
+export const updateNginxConfig = (id, config) => api.post(`/projects/${id}/nginx-config`, { config });
 
 // --- Server ---
 export const getServerStatus = () => api.get('/server/status');

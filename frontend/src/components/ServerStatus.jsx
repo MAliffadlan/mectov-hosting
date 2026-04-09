@@ -1,119 +1,121 @@
 import { useState, useEffect } from 'react';
 import { getServerStatus } from '@/api/api';
-import { Cpu, MemoryStick, HardDrive, Clock, Box } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Server, Cpu, MemoryStick, HardDrive } from 'lucide-react';
 
 const ServerStatus = () => {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchStatus = async () => {
-    try {
-      const { data } = await getServerStatus();
-      setStats(data);
-    } catch (err) {
-      console.error('Failed to fetch server status:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [stats, setStats] = useState({
+    cpu: 0,
+    ram: 0,
+    disk: 0,
+    uptime: '0s',
+    os: '',
+    node_version: ''
+  });
 
   useEffect(() => {
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 5000);
+    const fetchStats = async () => {
+      try {
+        const { data } = await getServerStatus();
+        setStats({
+          cpu: data.cpuUsage,
+          ram: data.memoryUsage,
+          disk: data.diskUsage,
+          uptime: data.uptime,
+          os: data.os,
+          node_version: data.nodeVersion
+        });
+      } catch (err) {
+        console.error('Failed to fetch stats:', err);
+      }
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const getIndicatorColor = (value) => {
-    if (value < 40) return "bg-green-500";
-    if (value < 70) return "bg-yellow-500";
-    return "bg-destructive";
+  const getStatusColor = (value) => {
+    if (value > 80) return 'bg-red-500';
+    if (value > 60) return 'bg-yellow-500';
+    return 'bg-green-500';
   };
 
-  const StatItem = ({ label, value, icon: Icon }) => (
-    <div className="flex-1 space-y-2">
-      <div className="flex items-center justify-between text-sm">
-        <span className="flex items-center text-muted-foreground">
-          <Icon className="mr-2 h-4 w-4" />
-          {label}
-        </span>
-        <span className="font-semibold">{value}%</span>
-      </div>
-      <Progress value={value} indicatorColor={getIndicatorColor(value)} className="h-2" />
-    </div>
-  );
-
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader className="pb-3 flex flex-row items-center justify-between">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-5 w-40" />
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-            <div className="space-y-3">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-2 w-full" />
-            </div>
-            <div className="space-y-3">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-2 w-full" />
-            </div>
-            <div className="space-y-3">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-2 w-full" />
-            </div>
-          </div>
-          <div className="flex items-center gap-6 pt-4 border-t mt-4">
-            <Skeleton className="h-3 w-28" />
-            <Skeleton className="h-3 w-24" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!stats) return null;
-
   return (
-    <Card>
-      <CardHeader className="pb-3 flex flex-row items-center justify-between">
-        <CardTitle className="text-sm font-semibold flex items-center">
-          <Box className="h-4 w-4 mr-2" />
-          Server Status
-        </CardTitle>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-muted-foreground font-mono">{stats.hostname}</span>
-          <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2" />
+    <div className="glass-panel w-full overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white/50">
+        <div className="flex items-center space-x-2">
+          <Server className="w-5 h-5 text-gray-700" />
+          <h2 className="text-sm font-bold text-gray-800">Server Status</h2>
+        </div>
+        <div className="flex items-center space-x-3">
+          <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded">mectov-server</span>
+          <div className="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 bg-green-100 text-green-700">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
             Online
-          </Badge>
+          </div>
         </div>
-      </CardHeader>
+      </div>
       
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-          <StatItem label="CPU Usage" value={stats.cpu} icon={Cpu} />
-          <StatItem label="RAM Usage" value={stats.ram} icon={MemoryStick} />
-          <StatItem label="Disk Usage" value={stats.disk} icon={HardDrive} />
+      <div className="px-6 py-6 border-b border-gray-100">
+        <div className="flex flex-col md:flex-row justify-between gap-8 md:gap-4">
+          
+          <div className="flex-1 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="flex items-center text-gray-600 font-medium">
+                <Cpu className="w-4 h-4 mr-1.5 text-gray-400" /> CPU Usage
+              </span>
+              <span className="font-bold text-gray-800">{stats.cpu}%</span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+              <div 
+                className={`h-1.5 rounded-full transition-all duration-1000 ease-in-out ${getStatusColor(stats.cpu)}`} 
+                style={{ width: `${stats.cpu}%` }} 
+              />
+            </div>
+          </div>
+
+          <div className="flex-1 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="flex items-center text-gray-600 font-medium">
+                <MemoryStick className="w-4 h-4 mr-1.5 text-gray-400" /> RAM Usage
+              </span>
+              <span className="font-bold text-gray-800">{stats.ram}%</span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+              <div 
+                className={`h-1.5 rounded-full transition-all duration-1000 ease-in-out ${getStatusColor(stats.ram)}`} 
+                style={{ width: `${stats.ram}%` }} 
+              />
+            </div>
+          </div>
+
+          <div className="flex-1 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="flex items-center text-gray-600 font-medium">
+                <HardDrive className="w-4 h-4 mr-1.5 text-gray-400" /> Disk Usage
+              </span>
+              <span className="font-bold text-gray-800">{stats.disk}%</span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+              <div 
+                className={`h-1.5 rounded-full transition-all duration-1000 ease-in-out ${getStatusColor(stats.disk)}`} 
+                style={{ width: `${stats.disk}%` }} 
+              />
+            </div>
+          </div>
+
         </div>
-        
-        <div className="flex items-center gap-6 text-xs text-muted-foreground pt-4 border-t">
-          <span className="flex items-center">
-            <Clock className="h-3.5 w-3.5 mr-1" />
-            Uptime: {stats.uptime}
-          </span>
-          <span className="flex items-center">
-            <Box className="h-3.5 w-3.5 mr-1" />
-            Node.js {stats.nodeVersion}
-          </span>
+      </div>
+
+      <div className="px-6 py-3 bg-gray-50/50 flex flex-wrap gap-4 text-xs font-medium text-gray-500">
+        <div className="flex items-center">
+          <span className="w-max">Uptime: <span className="text-gray-700 ml-1">{stats.uptime}</span></span>
         </div>
-      </CardContent>
-    </Card>
+        <div className="flex items-center">
+          <span className="w-max">Node.js <span className="text-gray-700 ml-1">{stats.node_version}</span></span>
+        </div>
+      </div>
+    </div>
   );
 };
 

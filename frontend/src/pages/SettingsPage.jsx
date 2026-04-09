@@ -1,109 +1,107 @@
+import { Settings as SettingsIcon, Save, KeyRound, ServerCrash } from 'lucide-react';
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner';
 
 const SettingsPage = () => {
-  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [pwd, setPwd] = useState({ current: '', new: '', confirm: '' });
 
-  const handlePasswordChange = (e) => {
-    e.preventDefault();
-    if (pwd.new !== pwd.confirm) {
-      toast.error('New passwords do not match');
-      return;
-    }
-    if (pwd.new.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
-    
+  const handleSave = () => {
     setLoading(true);
-    // Mocking an API call
     setTimeout(() => {
       setLoading(false);
-      toast.success('Password updated successfully');
-      setPwd({ current: '', new: '', confirm: '' });
     }, 1000);
   };
 
   return (
-    <div className="space-y-6 w-full pb-4">
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight">Settings</h2>
-        <p className="text-muted-foreground text-sm mt-1">
-          Manage your account settings and preferences.
+    <div className="max-w-4xl mx-auto w-full pb-12">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 tracking-tight flex items-center">
+          <SettingsIcon className="w-8 h-8 mr-3 text-green-600" />
+          Settings
+        </h1>
+        <p className="text-gray-500 mt-2 font-medium">
+          Manage panel preferences and system configurations.
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile Details</CardTitle>
-            <CardDescription>Your current account information.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>Username</Label>
-              <Input value={user?.username || 'admin'} disabled />
+      <div className="space-y-8">
+        
+        {/* Authentication Settings */}
+        <div className="glass-panel overflow-hidden">
+          <div className="bg-white/50 px-8 py-5 border-b border-gray-100">
+            <h2 className="text-lg font-bold text-gray-800 flex items-center">
+              <KeyRound className="w-5 h-5 mr-2 text-gray-400" />
+              Authentication
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">Update your login credentials.</p>
+          </div>
+          
+          <div className="p-8 space-y-5">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">New Password</label>
+              <input 
+                type="password" 
+                placeholder="Enter new password"
+                className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
+              />
             </div>
-            <div className="space-y-2">
-              <Label>Role</Label>
-              <Input value={user?.role || 'Administrator'} disabled />
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Confirm Password</label>
+              <input 
+                type="password" 
+                placeholder="Confirm your password"
+                className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
+              />
             </div>
-          </CardContent>
-        </Card>
+            <button 
+              onClick={handleSave} 
+              disabled={loading}
+              className="pill-button px-5 py-2.5 text-sm font-bold bg-gray-800 text-white hover:bg-black inline-flex items-center"
+            >
+              {loading ? (
+                 <div className="spinner w-4 h-4 mr-2"></div>
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              Update Password
+            </button>
+          </div>
+        </div>
 
-        <Card>
-          <form onSubmit={handlePasswordChange}>
-            <CardHeader>
-              <CardTitle>Change Password</CardTitle>
-              <CardDescription>Update your account password.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current">Current Password</Label>
-                <Input 
-                  id="current" 
-                  type="password"
-                  value={pwd.current}
-                  onChange={(e) => setPwd({...pwd, current: e.target.value})}
-                  required
-                />
+        {/* System Settings */}
+        <div className="glass-panel overflow-hidden">
+          <div className="bg-white/50 px-8 py-5 border-b border-gray-100">
+            <h2 className="text-lg font-bold text-gray-800 flex items-center">
+              <ServerCrash className="w-5 h-5 mr-2 text-gray-400" />
+              System Settings
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">Advanced configuration for the host server.</p>
+          </div>
+          
+          <div className="p-8 space-y-6">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-6">
+              <div>
+                <h4 className="font-semibold text-gray-800">Automatic Nginx Reload</h4>
+                <p className="text-sm text-gray-500 mt-1">Automatically reload nginx when proxy changes are made.</p>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="new">New Password</Label>
-                <Input 
-                  id="new" 
-                  type="password"
-                  value={pwd.new}
-                  onChange={(e) => setPwd({...pwd, new: e.target.value})}
-                  required
-                />
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" defaultChecked />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+              </label>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-semibold text-gray-800">Debug Logging</h4>
+                <p className="text-sm text-gray-500 mt-1">Enable verbose logging for troubleshooting.</p>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirm">Confirm Password</Label>
-                <Input 
-                  id="confirm" 
-                  type="password"
-                  value={pwd.confirm}
-                  onChange={(e) => setPwd({...pwd, confirm: e.target.value})}
-                  required
-                />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" disabled={loading}>
-                {loading ? <span className="spinner mr-2" /> : null} 
-                Save Changes
-              </Button>
-            </CardFooter>
-          </form>
-        </Card>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

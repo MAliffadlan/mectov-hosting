@@ -15,28 +15,28 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-16 my-auto ml-4 bg-card rounded-[2rem] shadow-sm flex flex-col items-center py-5 gap-2 flex-shrink-0 z-40 border border-border/50">
+    <aside className="w-16 my-auto ml-4 glass-panel bg-white/70 flex flex-col items-center py-5 gap-2 flex-shrink-0 z-40">
       {/* App Logo */}
-      <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center mb-1">
+      <div className="w-9 h-9 rounded-[14px] bg-green-100 flex items-center justify-center mb-1 shadow-inner shadow-green-500/20">
         <div className="grid grid-cols-2 gap-0.5 w-4 h-4">
-          <span className="bg-primary rounded-[2px]" />
-          <span className="bg-primary/70 rounded-[2px]" />
-          <span className="bg-primary/50 rounded-[2px]" />
-          <span className="bg-primary/30 rounded-[2px]" />
+          <span className="bg-green-600 rounded-[2px]" />
+          <span className="bg-green-500 rounded-[2px]" />
+          <span className="bg-green-400 rounded-[2px]" />
+          <span className="bg-green-300 rounded-[2px]" />
         </div>
       </div>
 
       {/* Nav Links */}
-      <nav className="flex flex-col gap-1.5 w-full px-3">
+      <nav className="flex flex-col gap-2 w-full px-3 mt-4">
         {navItems.map((item) => (
           <Link
             key={item.path}
             to={item.path}
             title={item.name}
-            className={`flex items-center justify-center w-full aspect-square rounded-xl transition-all duration-200 ${
+            className={`flex items-center justify-center w-full aspect-square rounded-xl transition-all duration-300 ${
               isActive(item.path)
-                ? 'bg-foreground text-background shadow-md'
-                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                ? 'bg-gradient-to-br from-green-600 to-green-700 text-white shadow-lg shadow-green-600/30'
+                : 'text-gray-400 hover:bg-white hover:text-green-700 hover:shadow-sm'
             }`}
           >
             {item.icon}
@@ -44,21 +44,20 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      {/* Divider */}
-      <div className="w-6 h-px bg-border my-1" />
+      <div className="flex-grow"></div>
 
       {/* Bottom */}
-      <div className="flex flex-col gap-1.5 w-full px-3">
+      <div className="flex flex-col gap-2 w-full px-3">
         <button
           onClick={logout}
           title="Logout"
-          className="flex items-center justify-center w-full aspect-square rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+          className="flex items-center justify-center w-full aspect-square rounded-xl text-gray-400 hover:bg-white hover:text-red-500 hover:shadow-sm transition-all duration-300 group"
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-5 w-5 group-hover:scale-110 transition-transform" />
         </button>
 
-        <div className="w-10 h-10 mx-auto rounded-full bg-secondary flex items-center justify-center overflow-hidden border">
-          <User className="h-5 w-5 text-muted-foreground" />
+        <div className="w-10 h-10 mx-auto rounded-xl bg-white flex items-center justify-center overflow-hidden shadow-sm border border-white/50 mt-2">
+          <User className="h-5 w-5 text-gray-400" />
         </div>
       </div>
     </aside>
