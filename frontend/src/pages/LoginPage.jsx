@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login: authLogin } = useAuth();
+  const { loginUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,7 +18,7 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const { data } = await login(username, password);
-      authLogin(data.token);
+      loginUser(data.token, { username });
       toast.success('Logged in');
       navigate(location.state?.from?.pathname || "/", { replace: true });
     } catch { toast.error('Invalid credentials'); }
