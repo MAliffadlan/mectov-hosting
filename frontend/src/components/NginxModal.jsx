@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getNginxConfig, updateNginxConfig } from '@/api/api';
-import { FileCode2, Save, X } from 'lucide-react';
+import { X, Save } from 'lucide-react';
 import { toast } from "sonner";
 
 const NginxModal = ({ projectId, projectName, onClose }) => {
@@ -14,8 +14,7 @@ const NginxModal = ({ projectId, projectName, onClose }) => {
         const { data } = await getNginxConfig(projectId);
         setConfig(data.config);
       } catch (err) {
-        toast.error('Failed to load Nginx config');
-        setConfig('# Error loading configuration file\n# Does the file exist?');
+        setConfig('# Error accessing block configuration.');
       } finally {
         setLoading(false);
       }
@@ -28,91 +27,68 @@ const NginxModal = ({ projectId, projectName, onClose }) => {
     setSaving(true);
     try {
       await updateNginxConfig(projectId, config);
-      toast.success('Nginx config saved successfully');
+      toast.success('Configuration overwritten');
       onClose();
     } catch (err) {
-      toast.error('Failed to save config');
+      toast.error('Write failed');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-full flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#f5f5f0]/80 backdrop-blur-[2px] animate-in fade-in duration-200">
+      <div className="neo-panel w-full max-w-4xl max-h-full flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 shadow-2xl">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-          <div className="flex items-center">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3 shadow-inner shadow-blue-500/10">
-              <FileCode2 className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">Nginx Configuration</h2>
-              <p className="text-xs font-mono text-gray-500 mt-0.5">{projectName}.conf</p>
-            </div>
+        <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E3D8] bg-[#FAFAFA]">
+          <div>
+            <h2 className="text-[13px] font-semibold text-[#171717]">Proxy Configuration</h2>
+            <p className="text-[11px] font-mono text-[#737373] mt-0.5">/etc/nginx/sites-available/{projectName}.conf</p>
           </div>
           
           <button 
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+            className="p-1.5 text-[#a3a3a3] hover:text-[#dc2626] transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-6 bg-gray-50 overflow-hidden flex flex-col min-h-[400px]">
+        <div className="flex-1 bg-white overflow-hidden flex flex-col min-h-[450px]">
           {loading ? (
             <div className="flex-1 flex flex-col items-center justify-center">
-              <div className="spinner text-blue-600 mb-4 h-8 w-8"></div>
-              <p className="text-sm font-medium text-gray-500">Reading configuration...</p>
+              <div className="spinner text-[#171717] mb-4"></div>
             </div>
           ) : (
-            <div className="flex-1 relative rounded-xl shadow-sm border border-gray-200 overflow-hidden bg-[#1e1e1e]">
-              <div className="h-9 bg-[#2d2d2d] flex items-center px-4 border-b border-[#1e1e1e]">
-                <span className="text-xs text-gray-400 font-mono">/etc/nginx/sites-available/{projectName}.conf</span>
-              </div>
-              <textarea
-                value={config}
-                onChange={(e) => setConfig(e.target.value)}
-                className="w-full h-[calc(100%-2.25rem)] bg-transparent text-[#d4d4d4] font-mono text-sm p-4 focus:outline-none resize-none leading-relaxed"
-                spellCheck="false"
-              />
-            </div>
+            <textarea
+              value={config}
+              onChange={(e) => setConfig(e.target.value)}
+              className="w-full flex-1 bg-transparent text-[#171717] font-mono text-[12px] p-5 focus:outline-none resize-none leading-relaxed"
+              spellCheck="false"
+            />
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-white border-t border-gray-100 flex justify-between items-center">
-          <p className="text-xs text-yellow-600 font-medium bg-yellow-50 px-3 py-1.5 rounded-md border border-yellow-100">
-            Warning: Invalid syntax may crash the Nginx service.
-          </p>
-          <div className="flex gap-3">
+        <div className="px-5 py-3 bg-[#FAFAFA] border-t border-[#E5E3D8] flex justify-between items-center">
+          <p className="text-[11px] text-[#b45309] font-medium">Syntax errors will prevent Nginx reload.</p>
+          <div className="flex gap-2">
             <button 
               onClick={onClose}
-              className="pill-button px-5 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+              className="neo-btn-secondary px-4 py-1.5 text-[11px]"
             >
-              Cancel
+              Discard
             </button>
             <button 
               onClick={handleSave}
               disabled={loading || saving}
-              className={`pill-button px-6 py-2 text-sm font-bold shadow-md shadow-blue-600/20 text-white flex items-center ${
-                loading || saving ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              className={`neo-btn-primary px-4 py-1.5 text-[11px] flex items-center ${
+                loading || saving ? 'opacity-70 cursor-not-allowed' : ''
               }`}
             >
-              {saving ? (
-                <>
-                  <div className="spinner w-4 h-4 mr-2 border-white/20 border-r-white"></div>
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Configuration
-                </>
-              )}
+              {saving ? 'Writing...' : 'Commit Changes'}
             </button>
           </div>
         </div>

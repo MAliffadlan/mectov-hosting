@@ -6,49 +6,100 @@
 
 @layer base {
   body {
-    background-color: #CFDFD4;
-    color: #1a1e23;
+    background-color: #EAE9E3; /* Exact requested oat background */
+    color: #171717; /* High contrast sharp text, not faded gray */
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.015em; /* Vercel/Linear crisp tracking */
   }
   html {
-    background-color: #CFDFD4;
+    background-color: #EAE9E3;
+  }
+  
+  /* Minimalist scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d4d4d4;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a3a3a3;
   }
 }
 
 /* 
-  Custom styling for exact precise aesthetics
-  These are classes that are used globally
+  Neo-Functional UI Core Elements
+  Strict, paper-white, ultra-sharp elements. No goofy padding or huge dropshadows.
 */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 24px -6px rgba(0, 0, 0, 0.05);
-  border-radius: 1.5rem;
+.neo-panel {
+  background: #FFFFFF;
+  border: 1px solid #D1D0C9; 
+  border-radius: 12px;
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.03);
 }
 
-.pill-button {
-  border-radius: 9999px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+.neo-btn-primary {
+  background-color: #1a2a22; /* Very deep sophisticated Forest Green */
+  color: #ffffff;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  font-weight: 500;
+  border: 1px solid #1a2a22;
+}
+.neo-btn-primary:active {
+  transform: translateY(1px);
+}
+.neo-btn-primary:hover {
+  background-color: #111e18;
+  border-color: #111e18;
 }
 
-.pill-button:active {
-  transform: scale(0.96);
+.neo-btn-secondary {
+  background-color: #ffffff;
+  color: #171717;
+  border: 1px solid #D1D0C9;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  font-weight: 500;
+}
+.neo-btn-secondary:hover {
+  background-color: #F8F8F6;
+  border-color: #C2C1BA;
+}
+.neo-btn-secondary:active {
+  transform: translateY(1px);
+}
+
+/* Base input styling */
+.neo-input {
+  background-color: #ffffff;
+  border: 1px solid #D1D0C9;
+  border-radius: 6px;
+  color: #171717;
+  transition: border-color 0.15s ease;
+}
+.neo-input:focus {
+  outline: none;
+  border-color: #1a2a22;
+  box-shadow: 0 0 0 1px #1a2a22;
 }
 
 /* 
-  Keep utility classes for custom components that are not strictly UI
-  (like the log console)
+  Terminal Log Style 
 */
 .log-container {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 12px;
-  line-height: 1.8;
-  background-color: #1e2530;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
+  font-size: 13px;
+  line-height: 1.6;
+  background-color: #0A0A0A;
+  border: 1px solid #D1D0C9;
+  border-radius: 8px;
   padding: 16px;
   overflow-y: auto;
   max-height: 500px;
@@ -58,26 +109,11 @@
   white-space: pre-wrap;
   word-break: break-all;
 }
-
-.log-line .time {
-  color: #8b9bb4;
-}
-
-.log-line .level-info {
-  color: #7ab4ff;
-}
-
-.log-line .level-warn {
-  color: #ffca66;
-}
-
-.log-line .level-debug {
-  color: #d199ff;
-}
-
-.log-line .level-error {
-  color: #ff6b6b;
-}
+.log-line .time { color: #737373; }
+.log-line .level-info { color: #6ee7b7; }
+.log-line .level-warn { color: #fde047; }
+.log-line .level-debug { color: #c084fc; }
+.log-line .level-error { color: #fca5a5; }
 
 /* Loading spinner */
 .spinner {

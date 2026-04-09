@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { login } from '@/api/api';
-import { Hexagon, Lock, User } from 'lucide-react';
+import { Hexagon } from 'lucide-react';
 import { toast } from "sonner";
 
 const LoginPage = () => {
@@ -21,7 +21,7 @@ const LoginPage = () => {
     try {
       const { data } = await login(username, password);
       authLogin(data.token);
-      toast.success('Welcome back logged in successfully!');
+      toast.success('Logged in successfully');
       
       const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
@@ -33,73 +33,60 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#CFDFD4] p-4 font-sans">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center bg-[#EAE9E3] p-4">
+      <div className="w-full max-w-[380px]">
         {/* Logo/Header */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-white rounded-2xl shadow-xl shadow-black/5 flex items-center justify-center mb-6 transform -rotate-6">
-            <Hexagon className="w-8 h-8 text-green-600" />
+        <div className="flex flex-col items-center mb-10">
+          <div className="w-12 h-12 bg-[#171717] rounded-xl flex items-center justify-center mb-6 shadow-sm">
+            <Hexagon className="w-6 h-6 text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Mectov Panel</h1>
-          <p className="text-gray-600 mt-2 font-medium">Personal Hosting Management</p>
+          <h1 className="text-[20px] font-semibold text-[#171717] tracking-tight">Mectov Panel</h1>
+          <p className="text-[13px] text-[#737373] mt-1">Sign in to your instance</p>
         </div>
 
         {/* Login Form */}
-        <div className="glass-panel overflow-hidden">
-          <form onSubmit={handleLogin} className="p-8 space-y-6">
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700 ml-1">Username</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                    placeholder="admin"
-                    className="w-full pl-10 pr-4 py-3 bg-white/60 border border-white focus:bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
-                  />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700 ml-1">Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-3 bg-white/60 border border-white focus:bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
-                  />
-                </div>
-              </div>
+        <div className="neo-panel overflow-hidden p-6 md:p-8">
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <label className="block text-[12px] font-medium text-[#171717] mb-1.5">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="neo-input w-full px-3 py-2 text-[14px]"
+                autoComplete="username"
+              />
             </div>
             
-            <button
-              type="submit"
-              disabled={loading}
-              className={`pill-button w-full flex justify-center py-3 px-4 shadow-lg shadow-green-600/20 text-sm font-bold text-white transition-colors ${
-                loading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
-              }`}
-            >
-              {loading ? (
-                <div className="flex items-center">
-                  <div className="spinner mr-2 border-white/20 border-r-white"></div>
-                  Authenticating...
-                </div>
-              ) : 'Sign In'}
-            </button>
+            <div>
+              <label className="block text-[12px] font-medium text-[#171717] mb-1.5">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="neo-input w-full px-3 py-2 text-[14px]"
+                autoComplete="current-password"
+              />
+            </div>
+            
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className={`neo-btn-primary w-full py-2.5 text-[13px] ${
+                  loading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+              >
+                {loading ? 'Authenticating...' : 'Sign In'}
+              </button>
+            </div>
           </form>
-          <div className="px-8 py-4 bg-gray-50/50 border-t border-white/40 text-center">
-            <p className="text-xs text-gray-500 font-medium">Secured with JWT authentication</p>
-          </div>
+        </div>
+        
+        <div className="mt-8 text-center">
+          <p className="text-[11px] text-[#a3a3a3]">Terminal-grade secure proxy panel</p>
         </div>
       </div>
     </div>

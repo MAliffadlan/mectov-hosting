@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getServerStatus } from '@/api/api';
-import { Server, Cpu, MemoryStick, HardDrive } from 'lucide-react';
 
 const ServerStatus = () => {
   const [stats, setStats] = useState({
@@ -34,86 +33,71 @@ const ServerStatus = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const getStatusColor = (value) => {
-    if (value > 80) return 'bg-red-500';
-    if (value > 60) return 'bg-yellow-500';
-    return 'bg-green-500';
-  };
-
   return (
-    <div className="glass-panel w-full overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white/50">
-        <div className="flex items-center space-x-2">
-          <Server className="w-5 h-5 text-gray-700" />
-          <h2 className="text-sm font-bold text-gray-800">Server Status</h2>
-        </div>
-        <div className="flex items-center space-x-3">
-          <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded">mectov-server</span>
-          <div className="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 bg-green-100 text-green-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
-            Online
+    <div className="neo-panel w-full overflow-hidden mb-8">
+      <div className="px-5 py-3 border-b border-[#E5E3D8] flex items-center justify-between">
+        <h2 className="text-[13px] font-semibold text-[#171717] tracking-tight">System Status</h2>
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] font-mono text-[#737373] uppercase tracking-widest">mectov-srv-01</span>
+          <div className="flex items-center gap-1.5">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-40"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]"></span>
+            </span>
+            <span className="text-[11px] font-semibold text-[#10b981] uppercase tracking-wider">Operational</span>
           </div>
         </div>
       </div>
       
-      <div className="px-6 py-6 border-b border-gray-100">
-        <div className="flex flex-col md:flex-row justify-between gap-8 md:gap-4">
-          
-          <div className="flex-1 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="flex items-center text-gray-600 font-medium">
-                <Cpu className="w-4 h-4 mr-1.5 text-gray-400" /> CPU Usage
-              </span>
-              <span className="font-bold text-gray-800">{stats.cpu}%</span>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-              <div 
-                className={`h-1.5 rounded-full transition-all duration-1000 ease-in-out ${getStatusColor(stats.cpu)}`} 
-                style={{ width: `${stats.cpu}%` }} 
-              />
-            </div>
+      <div className="px-5 py-5 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#E5E3D8] gap-4 md:gap-0">
+        
+        {/* CPU */}
+        <div className="flex flex-col md:pr-6 pt-2 md:pt-0">
+          <div className="flex justify-between items-baseline mb-2">
+            <span className="text-[12px] font-medium text-[#737373]">CPU</span>
+            <span className="text-[14px] font-semibold text-[#171717] tracking-tighter">{stats.cpu}%</span>
           </div>
-
-          <div className="flex-1 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="flex items-center text-gray-600 font-medium">
-                <MemoryStick className="w-4 h-4 mr-1.5 text-gray-400" /> RAM Usage
-              </span>
-              <span className="font-bold text-gray-800">{stats.ram}%</span>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-              <div 
-                className={`h-1.5 rounded-full transition-all duration-1000 ease-in-out ${getStatusColor(stats.ram)}`} 
-                style={{ width: `${stats.ram}%` }} 
-              />
-            </div>
+          <div className="w-full bg-[#F5F5F0] h-[3px] rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[#171717] rounded-full transition-all duration-700 ease-out" 
+              style={{ width: `${stats.cpu}%` }} 
+            />
           </div>
-
-          <div className="flex-1 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="flex items-center text-gray-600 font-medium">
-                <HardDrive className="w-4 h-4 mr-1.5 text-gray-400" /> Disk Usage
-              </span>
-              <span className="font-bold text-gray-800">{stats.disk}%</span>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-              <div 
-                className={`h-1.5 rounded-full transition-all duration-1000 ease-in-out ${getStatusColor(stats.disk)}`} 
-                style={{ width: `${stats.disk}%` }} 
-              />
-            </div>
-          </div>
-
         </div>
+
+        {/* RAM */}
+        <div className="flex flex-col md:px-6 pt-4 md:pt-0">
+          <div className="flex justify-between items-baseline mb-2">
+            <span className="text-[12px] font-medium text-[#737373]">Memory</span>
+            <span className="text-[14px] font-semibold text-[#171717] tracking-tighter">{stats.ram}%</span>
+          </div>
+          <div className="w-full bg-[#F5F5F0] h-[3px] rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[#171717] rounded-full transition-all duration-700 ease-out" 
+              style={{ width: `${stats.ram}%` }} 
+            />
+          </div>
+        </div>
+
+        {/* Disk */}
+        <div className="flex flex-col md:pl-6 pt-4 md:pt-0">
+          <div className="flex justify-between items-baseline mb-2">
+            <span className="text-[12px] font-medium text-[#737373]">Storage</span>
+            <span className="text-[14px] font-semibold text-[#171717] tracking-tighter">{stats.disk}%</span>
+          </div>
+          <div className="w-full bg-[#F5F5F0] h-[3px] rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[#a3a3a3] rounded-full transition-all duration-700 ease-out" 
+              style={{ width: `${stats.disk}%` }} 
+            />
+          </div>
+        </div>
+
       </div>
 
-      <div className="px-6 py-3 bg-gray-50/50 flex flex-wrap gap-4 text-xs font-medium text-gray-500">
-        <div className="flex items-center">
-          <span className="w-max">Uptime: <span className="text-gray-700 ml-1">{stats.uptime}</span></span>
-        </div>
-        <div className="flex items-center">
-          <span className="w-max">Node.js <span className="text-gray-700 ml-1">{stats.node_version}</span></span>
-        </div>
+      <div className="px-5 py-2.5 border-t border-[#E5E3D8] bg-[#FAFAFA] flex items-center justify-between text-[11px] font-medium text-[#737373]">
+        <div>Uptime: <span className="text-[#171717]">{stats.uptime}</span></div>
+        <div>Engine: <span className="text-[#171717]">{stats.node_version}</span></div>
       </div>
     </div>
   );

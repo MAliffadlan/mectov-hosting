@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, PlusCircle, Settings, User, LogOut } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Settings, User, LogOut, Hexagon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 const Sidebar = () => {
@@ -15,28 +15,23 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-16 my-auto ml-4 glass-panel bg-white/70 flex flex-col items-center py-5 gap-2 flex-shrink-0 z-40">
+    <aside className="w-16 my-auto ml-4 neo-panel flex flex-col items-center py-5 gap-4 flex-shrink-0 z-40 h-[calc(100vh-3rem)]">
       {/* App Logo */}
-      <div className="w-9 h-9 rounded-[14px] bg-green-100 flex items-center justify-center mb-1 shadow-inner shadow-green-500/20">
-        <div className="grid grid-cols-2 gap-0.5 w-4 h-4">
-          <span className="bg-green-600 rounded-[2px]" />
-          <span className="bg-green-500 rounded-[2px]" />
-          <span className="bg-green-400 rounded-[2px]" />
-          <span className="bg-green-300 rounded-[2px]" />
-        </div>
-      </div>
+      <Link to="/" className="w-10 h-10 flex items-center justify-center text-[#1a2a22]">
+        <Hexagon className="h-6 w-6" strokeWidth={2.5} />
+      </Link>
 
       {/* Nav Links */}
-      <nav className="flex flex-col gap-2 w-full px-3 mt-4">
+      <nav className="flex flex-col gap-3 w-full px-3 mt-4">
         {navItems.map((item) => (
           <Link
             key={item.path}
             to={item.path}
             title={item.name}
-            className={`flex items-center justify-center w-full aspect-square rounded-xl transition-all duration-300 ${
+            className={`flex items-center justify-center w-full aspect-square rounded-[10px] transition-all duration-150 ${
               isActive(item.path)
-                ? 'bg-gradient-to-br from-green-600 to-green-700 text-white shadow-lg shadow-green-600/30'
-                : 'text-gray-400 hover:bg-white hover:text-green-700 hover:shadow-sm'
+                ? 'bg-[#1a2a22] text-white shadow-sm'
+                : 'text-[#525252] hover:bg-[#F5F5F0] hover:text-[#171717]'
             }`}
           >
             {item.icon}
@@ -44,20 +39,20 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <div className="flex-grow"></div>
+      <div className="flex-grow border-l border-[#E5E3D8] h-full w-[1px]"></div>
 
       {/* Bottom */}
-      <div className="flex flex-col gap-2 w-full px-3">
+      <div className="flex flex-col gap-3 w-full px-3">
         <button
           onClick={logout}
           title="Logout"
-          className="flex items-center justify-center w-full aspect-square rounded-xl text-gray-400 hover:bg-white hover:text-red-500 hover:shadow-sm transition-all duration-300 group"
+          className="flex items-center justify-center w-full aspect-square rounded-[10px] text-[#525252] hover:bg-[#ffefef] hover:text-[#dc2626] transition-colors"
         >
-          <LogOut className="h-5 w-5 group-hover:scale-110 transition-transform" />
+          <LogOut className="h-4 w-4" strokeWidth={2} />
         </button>
 
-        <div className="w-10 h-10 mx-auto rounded-xl bg-white flex items-center justify-center overflow-hidden shadow-sm border border-white/50 mt-2">
-          <User className="h-5 w-5 text-gray-400" />
+        <div className="w-10 h-10 mx-auto rounded-full bg-[#f5f5f0] flex items-center justify-center border border-[#e5e3d8] overflow-hidden">
+          <User className="h-4 w-4 text-[#737373]" />
         </div>
       </div>
     </aside>

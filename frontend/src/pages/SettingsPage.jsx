@@ -1,4 +1,3 @@
-import { Settings as SettingsIcon, Save, KeyRound, ServerCrash } from 'lucide-react';
 import { useState } from 'react';
 
 const SettingsPage = () => {
@@ -12,91 +11,83 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto w-full pb-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight flex items-center">
-          <SettingsIcon className="w-8 h-8 mr-3 text-green-600" />
-          Settings
+    <div className="max-w-[800px] mx-auto w-full pb-12 pt-4">
+      <div className="mb-6 border-b border-[#E5E3D8] pb-6">
+        <h1 className="text-[20px] font-semibold text-[#171717] tracking-tight">
+          System Preferences
         </h1>
-        <p className="text-gray-500 mt-2 font-medium">
-          Manage panel preferences and system configurations.
+        <p className="text-[13px] text-[#737373] mt-1">
+          Manage panel configuration and security settings.
         </p>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         
         {/* Authentication Settings */}
-        <div className="glass-panel overflow-hidden">
-          <div className="bg-white/50 px-8 py-5 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-gray-800 flex items-center">
-              <KeyRound className="w-5 h-5 mr-2 text-gray-400" />
-              Authentication
+        <div className="neo-panel overflow-hidden">
+          <div className="bg-[#FAFAFA] px-6 py-4 border-b border-[#E5E3D8]">
+            <h2 className="text-[14px] font-semibold text-[#171717]">
+              Security
             </h2>
-            <p className="text-sm text-gray-500 mt-1">Update your login credentials.</p>
+            <p className="text-[12px] text-[#737373] mt-0.5">Update host access credentials.</p>
           </div>
           
-          <div className="p-8 space-y-5">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">New Password</label>
+          <div className="p-6 md:p-8 space-y-5">
+            <div className="max-w-md">
+              <label className="block text-[13px] font-medium text-[#171717] mb-1.5">New Password</label>
               <input 
                 type="password" 
-                placeholder="Enter new password"
-                className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
+                className="neo-input w-full px-3 py-2 text-[14px]"
               />
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Confirm Password</label>
+            <div className="max-w-md">
+              <label className="block text-[13px] font-medium text-[#171717] mb-1.5">Confirm Password</label>
               <input 
                 type="password" 
-                placeholder="Confirm your password"
-                className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm"
+                className="neo-input w-full px-3 py-2 text-[14px]"
               />
             </div>
-            <button 
-              onClick={handleSave} 
-              disabled={loading}
-              className="pill-button px-5 py-2.5 text-sm font-bold bg-gray-800 text-white hover:bg-black inline-flex items-center"
-            >
-              {loading ? (
-                 <div className="spinner w-4 h-4 mr-2"></div>
-              ) : (
-                <Save className="w-4 h-4 mr-2" />
-              )}
-              Update Password
-            </button>
+            <div className="pt-2">
+              <button 
+                onClick={handleSave} 
+                disabled={loading}
+                className="neo-btn-secondary px-4 py-2 text-[13px]"
+              >
+                {loading ? 'Saving...' : 'Update Password'}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* System Settings */}
-        <div className="glass-panel overflow-hidden">
-          <div className="bg-white/50 px-8 py-5 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-gray-800 flex items-center">
-              <ServerCrash className="w-5 h-5 mr-2 text-gray-400" />
-              System Settings
+        <div className="neo-panel overflow-hidden">
+          <div className="bg-[#FAFAFA] px-6 py-4 border-b border-[#E5E3D8]">
+            <h2 className="text-[14px] font-semibold text-[#171717]">
+              Engine Configuration
             </h2>
-            <p className="text-sm text-gray-500 mt-1">Advanced configuration for the host server.</p>
+            <p className="text-[12px] text-[#737373] mt-0.5">Advanced network toggles.</p>
           </div>
           
-          <div className="p-8 space-y-6">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-6">
+          <div className="p-6 md:p-8 flex flex-col gap-0 border-b border-[#E5E3D8]/50">
+            <div className="flex items-center justify-between py-4 border-b border-[#f5f5f0]">
               <div>
-                <h4 className="font-semibold text-gray-800">Automatic Nginx Reload</h4>
-                <p className="text-sm text-gray-500 mt-1">Automatically reload nginx when proxy changes are made.</p>
+                <h4 className="text-[13px] font-medium text-[#171717]">Automatic Nginx Reload</h4>
+                <p className="text-[12px] text-[#737373] mt-1">Zero downtime proxy reconfiguration on changes.</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" defaultChecked />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                <div className="w-8 h-4 bg-[#d4d4d4] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#1a2a22]"></div>
               </label>
             </div>
             
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between py-4">
               <div>
-                <h4 className="font-semibold text-gray-800">Debug Logging</h4>
-                <p className="text-sm text-gray-500 mt-1">Enable verbose logging for troubleshooting.</p>
+                <h4 className="text-[13px] font-medium text-[#171717]">Verbose Logging</h4>
+                <p className="text-[12px] text-[#737373] mt-1">Retain detailed standard output dumps.</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                <div className="w-8 h-4 bg-[#d4d4d4] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#1a2a22]"></div>
               </label>
             </div>
           </div>
